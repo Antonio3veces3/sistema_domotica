@@ -1,8 +1,10 @@
 Arduino.ino
-llama funcion task.temperatura();
+llama funcion task.temperatura();	
+task.temp()
+
 Arduino.h
  	pines de todos los sensores y actuadores
-	task.temp()
+
 
 Sensor.h
 	funciones de sensores, sensor.begin() (Cargar todos los sensores)
