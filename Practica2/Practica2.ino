@@ -29,15 +29,16 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "Practica2.h"
 
+
 void setup( void ) {
 
   Serial.begin ( 115200 );
-  sensor.beginDHT11();
+  //beginDHT11();
 }
 
 
 void loop ( void ) {
-  tasks.currentMillis = millis();
+  
   tasks.get_temperature();
   tasks.get_humidity();
   
