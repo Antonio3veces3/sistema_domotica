@@ -33,7 +33,7 @@
 void setup( void ) {
 
   Serial.begin ( 115200 );
-  //beginDHT11();
+  beginDHT11();
 }
 
 

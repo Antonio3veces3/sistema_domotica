@@ -10,23 +10,24 @@ class class_tasks{
     float get_humidity( void );
 };
 
-//each 5 seconds
 float class_tasks::get_temperature( void ){
   if((millis() - timeTemp) >= intervaloTemp ){
     timeTemp = millis();
     float tempSensor = sensor.obtener_temperatura();
-    Serial.println(" 5 segundos");
+    Serial.print("Temperatura: ");
+    Serial.println(tempSensor);
     return tempSensor;
   }else{
     return 0;
   }
 }
-//each 7 seconds
+
 float class_tasks::get_humidity( void ){
   if((millis() - timeHum) >= intervaloHum ){
     timeHum = millis();
     float humSensor = sensor.obtener_humedad();
-    Serial.println(" 7 segundos");
+    Serial.print("Humedad: ");
+    Serial.println(humSensor);
     return humSensor;
   }else{
      return 0;
