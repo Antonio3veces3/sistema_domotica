@@ -42,5 +42,6 @@ void loop ( void ) {
   tasks.get_temperature();
   tasks.get_humidity();
   tasks.get_brightness();
+  tasks.get_motion();
   
 }
