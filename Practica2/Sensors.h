@@ -4,6 +4,10 @@
 #include <DHT.h>
 #include <DHT_U.h>
 
+/*#define pinDHT11 4
+#define pinLDR 0
+#define pinPIR 1*/
+
 //Sensor de movimiento PIR
 //Actuador Buzzer Activo
 //Actuador Relay de Estado Solido 
@@ -31,19 +35,17 @@ class class_sensors {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PINES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-#define pinDHT11 4;
-#define pinLDR 0;
-#define pinPIR 1;
+
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //Sensor de temperatura y humedad DHT11
-DHT dht( pinDHT11, DHT11 );
+DHT dht( 4, DHT11 );
 
 //Sensor de movimiento PIR
-pinMode(pinPIR, INPUT);
-pinMode(LED_BUILTIN, OUTPUT);
+
+
 
 //Actuador Buzzer Activo
 //Actuador Relay de Estado Solido 
@@ -68,13 +70,18 @@ float class_sensors::obtener_humedad ( void ){
 
 //Sensor de luminosidad LDR
 int class_sensors::obtener_luminosidad ( void ){
-  return valorLDR = analogRead(pinLDR);
+  valorLDR = analogRead(0);
+  return  valorLDR;
+  
 }
 
 //Sensor de mdetección movimiento PIR
 int class_sensors::obtener_movimiento ( void ){
-  return valorPIR = digitalRead(pinPIR);
+  valorPIR = digitalRead(5);
+  return valorPIR;
 }
+
+
 
 
 

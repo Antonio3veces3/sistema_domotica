@@ -5,12 +5,22 @@ class class_tasks{
     unsigned long intervaloTemp = 5000;
     unsigned long intervaloHum = 7000;
     unsigned long timeLdr = 0;
-    unsigned long intervaloLdr = 2000;
+    unsigned long intervaloLdr = 1000;
+    unsigned long timeMov = 0;
+    unsigned long intervaloMov = 1000;
+    unsigned long timeDecision = 0;
+    unsigned long intervaloDecision = 1000;
 
   public:
     float get_temperature( void );
     float get_humidity( void );
     int get_brightness (void);
+    int get_movement ( void );
+    void LED_ON (void);
+    void LED_OFF (void);
+    void Buzzer_ON (void);
+    void Buzzer_OFF (void);
+    void decision (void);
 };
 
 float class_tasks::get_temperature( void ){
@@ -46,4 +56,35 @@ int class_tasks::get_brightness(void){
   }else{
     return -1;
   }
+}
+
+int class_tasks::get_movement(void){
+  if((millis() - timeMov) >= intervaloMov){
+    timeMov = millis();
+    int isMov = sensor.obtener_movimiento();
+    Serial.print("Hay movimiento: ");
+    Serial.println(isMov);
+    return isMov;
+  }else{
+    return -1;
+  }
+}
+
+void class_tasks::decision (void){
+  
+}
+void class_tasks::LED_ON (void){
+  actuadores.EncenderLED();
+}
+void class_tasks::LED_OFF (void){
+  actuadores.ApagarLED();
+}
+void class_tasks::Buzzer_ON (void){
+  
+  for(int i =1;i<=5;i++)
+  {
+    actuadores.EncenderBuzzer();
+    delay(1000);
+  }
+  
 }
