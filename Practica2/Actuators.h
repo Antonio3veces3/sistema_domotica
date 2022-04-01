@@ -1,5 +1,4 @@
-/*#define PIN_SSR 0
-#define PIN_BZZ 14*/
+#include <LiquidCrystal_I2C.h>
 
 class class_actuators {
 
@@ -7,14 +6,15 @@ class class_actuators {
      int sinVal = 0;
      int toneVal = 0;
 
-
- public:                                  //Métodos Públicas
+ public:        
+                          //Métodos Públicas
+    void initLCD(void);
     void EncenderLED(void);
     void ApagarLED(void);  
-    
+    void imprimirLCD(float temp, float hum);
     void EncenderBuzzer(void);
     void ApagarBuzzer(void);
-                         //Método para obtener la temperatura del sensor DHT11  //Método para obtener el movimiento
+                         
 
              //Método para inicilizar el sensor DHT11
 };
@@ -26,17 +26,45 @@ class class_actuators {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-
-
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+byte customChar1[] = {
+        B00011,
+        B00011,    
+        B00000,
+        B00000,
+        B00000,
+        B00000,
+        B00000,
+        B00000
+    };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
 
+
+void initLCD(void){
+    lcd.init();
+    lcd.backlight();
+}
+
+void class_actuators::imprimirLCD(float temp, float hum){
+    lcd.clear();
+    lcd.createChar(0, customChar1);
+    lcd.setCursor(0,0);
+    lcd.print("Temp: " + String(temp) + " C");
+    lcd.setCursor(11,0);
+    lcd.write(0);
+    lcd.setCursor(12,0);
+    lcd.print("C");
+    lcd.setCursor(0,1);
+    lcd.print("Hum: " + String(hum) + " %");
+}
+
 void class_actuators::EncenderLED(void){
-    digitalWrite(12,LOW); 
+    digitalWrite(0,LOW); 
 }
 
 void class_actuators::ApagarLED(void){
-    digitalWrite(12,HIGH); 
+    digitalWrite(0,HIGH); 
 }
 
 void class_actuators::EncenderBuzzer(void){

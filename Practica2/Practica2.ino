@@ -34,11 +34,11 @@ void setup( void ) {
 
   Serial.begin ( 115200 );
   beginDHT11();
-
-  pinMode(4, OUTPUT); //SENSOR DHT11
-  pinMode(5, INPUT); //SENSOR PIR
+  initLCD();
+  pinMode(12, OUTPUT); //SENSOR DHT11
+  pinMode(13, INPUT); //SENSOR PIR
   pinMode(14, OUTPUT); //BUZZER
-  pinMode(12, OUTPUT); //RELAY RSS 
+  pinMode(0, OUTPUT); //RELAY RSS 
   digitalWrite(12,LOW);
 }
 
@@ -50,9 +50,11 @@ void loop ( void ) {
   tasks.get_motion(); 
   tasks.get_movement();*/
 
+  //SI JALA
   int movement = tasks.get_movement();
   int brightness = tasks.get_brightness();
   float temperature = tasks.get_temperature();
+  float humidity = tasks.get_humidity();
 
   if(brightness > 800 &&  movement == 1){
       tasks.LED_ON();
@@ -64,9 +66,14 @@ void loop ( void ) {
           Serial.println("APAGAR LED");
         }
       }
+  if (temperature!= 0 or humidity !=0)
+  {
+    Serial.println("IMPRIMIR DATOS");
+    tasks.printTempHum(temperature, humidity);
+  }
   
 
-  if(temperature >= 40.00)
+  if(temperature >= 25.00)
   {
     tasks.Buzzer_ON();
   }  

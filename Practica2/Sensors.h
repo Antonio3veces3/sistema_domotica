@@ -41,7 +41,7 @@ class class_sensors {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //Sensor de temperatura y humedad DHT11
-DHT dht( 4, DHT11 );
+DHT dht( 12, DHT11 );
 
 //Sensor de movimiento PIR
 
@@ -77,7 +77,7 @@ int class_sensors::obtener_luminosidad ( void ){
 
 //Sensor de mdetección movimiento PIR
 int class_sensors::obtener_movimiento ( void ){
-  valorPIR = digitalRead(5);
+  valorPIR = digitalRead(12);
   return valorPIR;
 }
 

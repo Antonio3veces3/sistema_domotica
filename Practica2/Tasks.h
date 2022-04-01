@@ -3,7 +3,7 @@ class class_tasks{
     unsigned long timeTemp = 0;
     unsigned long timeHum = 0;
     unsigned long intervaloTemp = 5000;
-    unsigned long intervaloHum = 7000;
+    unsigned long intervaloHum = 5000;
     unsigned long timeLdr = 0;
     unsigned long intervaloLdr = 1000;
     unsigned long timeMov = 0;
@@ -21,6 +21,7 @@ class class_tasks{
     void Buzzer_ON (void);
     void Buzzer_OFF (void);
     void decision (void);
+    void printTempHum (float temp, float hum);
 };
 
 float class_tasks::get_temperature( void ){
@@ -70,9 +71,7 @@ int class_tasks::get_movement(void){
   }
 }
 
-void class_tasks::decision (void){
-  
-}
+
 void class_tasks::LED_ON (void){
   actuadores.EncenderLED();
 }
@@ -87,4 +86,8 @@ void class_tasks::Buzzer_ON (void){
     delay(1000);
   }
   
+}
+
+void class_tasks::printTempHum (float temp, float hum){
+  actuadores.imprimirLCD(temp, hum);
 }
