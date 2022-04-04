@@ -76,5 +76,5 @@ void class_actuators::EncenderBuzzer(void){
     }
 }
 void class_actuators::ApagarBuzzer(void){
-    //
+    noTone(14);
 }

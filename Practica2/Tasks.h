@@ -83,9 +83,13 @@ void class_tasks::Buzzer_ON (void){
   for(int i =1;i<=5;i++)
   {
     actuadores.EncenderBuzzer();
-    delay(1000);
+    delay(2000);
   }
   
+}
+
+void class_tasks::Buzzer_OFF( void ){
+  actuadores.ApagarBuzzer();
 }
 
 void class_tasks::printTempHum (float temp, float hum){

@@ -76,6 +76,8 @@ void loop ( void ) {
   if(temperature >= 25.00)
   {
     tasks.Buzzer_ON();
+  }else{
+    tasks.Buzzer_OFF();
   }  
 delay(1000);
 }
