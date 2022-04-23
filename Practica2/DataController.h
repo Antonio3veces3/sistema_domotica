@@ -1,5 +1,6 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include <LiquidCrystal_I2C.h>
+#include <ArduinoJson.h>
 #include "RTClib.h"
 #include "FS.h"
 #include "SD.h"
@@ -15,6 +16,9 @@ class class_data_controller {
        void imprimirLCD(int temp, int hum, String date);
        void createFile(fs::FS &fs, const char * path, const char * message);
        void appendFile(fs::FS &fs, const char * path, const char * message);
+       String crear_json_temp_hum(String date, int temp, int hum);
+       String crear_json_action(String date, String action);
+       String crear_json_warning(String date, String warning);
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -125,3 +129,32 @@ void class_data_controller::appendFile(fs::FS &fs, const char * path, const char
   }
   file.close();
 }
+
+String class_data_controller::crear_json_temp_hum(String date, int temp, int hum){
+  String newJson;
+  DynamicJsonDocument doc(1024);
+  doc["date"] = date;
+  doc["temperatura"]   = temp;
+  doc["humedad"] = hum; 
+  serializeJson(doc, newJson);
+  return newJson;
+}
+
+String class_data_controller::crear_json_action(String date, String action){
+    String newJson;
+    DynamicJsonDocument doc(1024);
+    doc["date"]  = date;
+    doc["accion"]= action; 
+    serializeJson(doc, newJson);
+    return newJson;
+}
+
+String class_data_controller::crear_json_warning(String date, String warning){
+    String newJson;
+    DynamicJsonDocument doc(1024);
+    doc["date"]  = date;
+    doc["advertencia"]= warning; 
+    serializeJson(doc, newJson);
+    return newJson;
+}
+

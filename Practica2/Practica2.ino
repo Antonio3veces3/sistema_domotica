@@ -152,32 +152,60 @@ void loop ( void ) {
   char dateString[n+1];
   strcpy(dateString, date.c_str());
 
-  if(brightness > 800 &&  movement == 1){
+  if(brightness > 800 and  movement == 1){
       tasks.LED_ON();
       Serial.println("ENCENDER LED");
+      char accion[500];
+      strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str());
+      client.publish("esp32/accion", accion);
+      tasks.append_file(SD, "/Data.txt", accion);
+
+      char advertencia[500];
+      strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());
+      client.publish("esp32/advertencia", advertencia);
+      tasks.append_file(SD, "/Data.txt", advertencia);
       }else{
-        if (brightness != -1 && movement != -1)
+        if (brightness != -1 or movement != -1)
         {
           tasks.LED_OFF();
           Serial.println("APAGAR LED");
+          char accion[500];
+          strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str());
+          client.publish("esp32/accion", accion);
+          tasks.append_file(SD, "/Data.txt", accion);
         }
       }
   if (temperature!= 0 and humidity !=0)
   {
     Serial.println("IMPRIMIR DATOS");
     tasks.printTempHumDate(temperature, humidity, date);
-    char buf [300];
-    snprintf(buf, sizeof(buf),"{\"time\":\"%d\",\"temp\":%d,\"humedad\":%d}""\n", dateString, temperature, humidity);
-    Serial.println(buf);
-    tasks.append_file(SD, "/Data.txt", buf);
-    client.publish("esp32/data", buf);
+
+    char clima[500];
+    strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str());
+    client.publish("esp32/clima", clima);
+    tasks.append_file(SD, "/Data.txt", clima);
   }
   
   if(temperature >= 25)
   {
     tasks.Buzzer_ON();
+    char accion[500];
+    strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str());
+    client.publish("esp32/accion", accion);
+    tasks.append_file(SD, "/Data.txt", accion);
+
+    char advertencia[500];
+    strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str());
+    client.publish("esp32/advertencia", advertencia);
+    tasks.append_file(SD, "/Data.txt", advertencia);
+
   }else{
     tasks.Buzzer_OFF();
+    
+    char accion[500];
+    strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str());
+    client.publish("esp32/accion", accion);
+    tasks.append_file(SD, "/Data.txt", accion);
   }  
 delay(1000);
 }

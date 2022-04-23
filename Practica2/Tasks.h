@@ -27,6 +27,9 @@ class class_tasks{
     String get_date(void);
     void create_file(fs::FS &fs, const char * path, const char * message);
     void append_file( fs::FS &fs, const char * path, const char * message);
+    String create_json_temp_hum(String date, int temp, int hum);
+    String create_json_action(String date, String action);
+    String create_json_warning(String date, String warning);
 };
 
 
@@ -112,4 +115,18 @@ void class_tasks::create_file(fs::FS &fs, const char * path, const char * messag
 
 void class_tasks::append_file(fs::FS &fs, const char * path, const char * message){
   control.appendFile(fs, path, message);
+}
+
+
+        
+String class_tasks::create_json_temp_hum(String date, int temp, int hum){
+  control.crear_json_temp_hum(date, temp, hum);
+}
+
+String class_tasks::create_json_action(String date, String action){
+  control.crear_json_action( date,  action);
+}
+
+String class_tasks::create_json_warning(String date, String warning){
+  control.crear_json_warning( date,  warning);
 }
