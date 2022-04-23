@@ -1,7 +1,3 @@
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
-
 class class_tasks{
   public:
     unsigned long timeTemp = 0;
@@ -107,10 +103,10 @@ String class_tasks::get_date ( void ){
   return control.getDataTime();
 }
 
-/*void class_tasks::create_file(fs::FS &fs, const char * path, const char * message){
+void class_tasks::create_file(fs::FS &fs, const char * path, const char * message){
   control.createFile(fs, path, message);
 }
 
 void class_tasks::append_file(fs::FS &fs, const char * path, const char * message){
   control.appendFile(fs, path, message);
-}*/
+}

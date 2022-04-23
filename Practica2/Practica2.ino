@@ -32,31 +32,15 @@
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
+
 //Libreria wifi esp32
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-/*#define SD_CS 5
+#define SD_CS 5
 #define SD_SCK 18
 #define SD_MOSI 23
 #define SD_MISO 19
-File file;
-
-void writeFile(fs::FS &fs, const char * path, const char * message){
-  Serial.printf("Writing file: %s\n", path);
-
-  File file = fs.open(path, FILE_WRITE);
-  if(!file){
-    Serial.println("Failed to open file for writing");
-    return;
-  }
-  if(file.print(message)){
-    Serial.println("File written");
-  } else {
-    Serial.println("Write failed");
-  }
-  file.close();
-}*/
 
 const char* ssid = "zaholy";
 const char* password = "pelusatony";
@@ -64,13 +48,9 @@ const char* password = "pelusatony";
 const char* mqtt_server = "test.mosquitto.org";
 
 WiFiClient espClient;
-
 PubSubClient client(espClient);
-
 unsigned long lastMsg = 0;
-
 #define MSG_BUFFER_SIZE (50)
-
 char msg[MSG_BUFFER_SIZE];
 
 int value = 0;
@@ -140,11 +120,12 @@ void setup( void ) {
   pinMode(34, OUTPUT); //RELAY RSS 
   digitalWrite(34,LOW); //iNICIALIAR RELAY
   pinMode(4, INPUT); //SENSOR LDR
+
   setup_wifi();
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  /*SPIClass sd_spi(HSPI);
+  SPIClass sd_spi(HSPI);
     sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
   
     if (!SD.begin(SD_CS, sd_spi))
@@ -152,8 +133,7 @@ void setup( void ) {
     else
         Serial.println("SD Card: mounted.");
 
-
-  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n");*/
+  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n");
 }
 
 void loop ( void ) {
@@ -161,14 +141,17 @@ void loop ( void ) {
     reconnect();
   }
   client.loop();
+
   String date = tasks.get_date();
   int movement = tasks.get_movement();
   int brightness = tasks.get_brightness();
   int temperature = tasks.get_temperature();
   int humidity = tasks.get_humidity();
+
   int n = date.length();
   char dateString[n+1];
   strcpy(dateString, date.c_str());
+
   if(brightness > 800 &&  movement == 1){
       tasks.LED_ON();
       Serial.println("ENCENDER LED");
@@ -183,11 +166,10 @@ void loop ( void ) {
   {
     Serial.println("IMPRIMIR DATOS");
     tasks.printTempHumDate(temperature, humidity, date);
-    
-    
-    char  buf [300];
-    snprintf(buf, sizeof(buf),"{\"time\":\"%d\",\"temp\":%d,\"humedad\":%d}", dateString, temperature, humidity);
+    char buf [300];
+    snprintf(buf, sizeof(buf),"{\"time\":\"%d\",\"temp\":%d,\"humedad\":%d}""\n", dateString, temperature, humidity);
     Serial.println(buf);
+    tasks.append_file(SD, "/Data.txt", buf);
     client.publish("esp32/data", buf);
   }
   

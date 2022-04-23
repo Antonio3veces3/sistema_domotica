@@ -16,10 +16,6 @@ RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
 void class_data_controller::initRTC ( void ){
-   /* #ifndef ESP8266
-        while (!Serial); // wait for serial port to connect. Needed for native USB
-    #endif*/
-
     if (! rtc.begin()) {
         Serial.println("Couldn't find RTC");
         Serial.flush();
@@ -46,7 +42,6 @@ String class_data_controller::getDataTime ( void ){
     return date;
 }
 
-
 /*void class_data_controller::initSD (int SD_SCK, int SD_MISO, int SD_MOSI, int SD_CS){
     SPIClass sd_spi(HSPI);
     sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
@@ -57,34 +52,34 @@ String class_data_controller::getDataTime ( void ){
         Serial.println("SD Card: mounted.");
 }*/
 
-/*void class_data_controller::createFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Writing file: %s\n", path);
+void class_data_controller::createFile(fs::FS &fs, const char * path, const char * message){
+  Serial.printf("Writing file: %s\n", path);
 
-    File file = fs.open(path, FILE_WRITE);
-    if(!file){
-        Serial.println("Failed to open file for writing");
-        return;
-    }
-    if(file.print(message)){
-        Serial.println("File written");
-    } else {
-        Serial.println("Write failed");
-    }
-    file.close();
+  File file = fs.open(path, FILE_WRITE);
+  if(!file){
+      Serial.println("Failed to open file for writing");
+      return;
+  }
+  if(file.print(message)){
+      Serial.println("File written");
+  } else {
+      Serial.println("Write failed");
+  }
+  file.close();
 }
 
 void class_data_controller::appendFile(fs::FS &fs, const char * path, const char * message){
-    Serial.printf("Appending to file: %s\n", path);
+  Serial.printf("Appending to file: %s\n", path);
 
-    File file = fs.open(path, FILE_APPEND);
-    if(!file){
-        Serial.println("Failed to open file for appending");
-        return;
-    }
-    if(file.print(message)){
-        Serial.println("Message appended");
-    } else {
-        Serial.println("Append failed");
-    }
-    file.close();
-}*/
+  File file = fs.open(path, FILE_APPEND);
+  if(!file){
+      Serial.println("Failed to open file for appending");
+      return;
+  }
+  if(file.print(message)){
+      Serial.println("Message appended");
+  } else {
+      Serial.println("Append failed");
+  }
+  file.close();
+}
