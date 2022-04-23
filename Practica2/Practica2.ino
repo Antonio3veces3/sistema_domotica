@@ -1,7 +1,7 @@
 /*****************************************************************************
 *                                                                            *
-*      NOMBRE:      Práctica 1.2.                                            *
-*      FECHA:       17 de marzo de 2022.                                     *
+*      NOMBRE:      Práctica 2.1.                                            *
+*      FECHA:       25 de marzo de 2022.                                     *
 *      VERSIÓN:     1.0.                                                     *
 *                                                                            *
 *      AUTOR:       Mondragón Delgado Mezly Zahory
@@ -10,7 +10,7 @@
 *                   Ramirez Diaz Radames Oswaldo
 *                   Ramirez Garcia Carlos Antonio
 *                                                                            *
-*      E-MAIL:      mmondragon@uco.mx                                        *
+*      E-MAIL:      mmondragon@ucol.mx                                        *
 *      COMPAÑÍA:    Universidad de Colima - Facultad de Telemática.          *
 *                                                                            *
 *      uC:          ESP832.                                                 *

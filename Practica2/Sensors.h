@@ -1,13 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 //Sensor de temperatura y humedad DHT11
 #include <DHT.h>
 #include <DHT_U.h>
-
-
-//Sensor de movimiento PIR
-//Actuador Buzzer Activo
-//Actuador Relay de Estado Solido 
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -27,23 +21,9 @@ class class_sensors {
     void beginDHT11 ( void );            //Método para inicilizar el sensor DHT11
 };
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~PINES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 //Sensor de temperatura y humedad DHT11
 DHT dht( 32, DHT11 ); //PIN DHT11
-
-//Sensor de movimiento PIR
-
-
-
-//Actuador Buzzer Activo
-//Actuador Relay de Estado Solido 
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
 

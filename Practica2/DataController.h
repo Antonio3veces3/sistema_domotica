@@ -1,21 +1,63 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <LiquidCrystal_I2C.h>
 #include "RTClib.h"
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_data_controller {
-    public:
-        void initRTC (void);
-        void initSD (int, int, int, int);
-        String getDataTime (void);
-        void createFile (fs::FS &fs, const char * path, const char * message );
-        void appendFile(fs::FS &fs, const char * path, const char * message );
+    public:   //Métodos Públicos            
+       void initLCD(void);
+       void initRTC(void);
+       //void initSD (int, int, int, int);
+       String getDataTime(void);
+       void imprimirLCD(int temp, int hum, String date);
+       void createFile(fs::FS &fs, const char * path, const char * message);
+       void appendFile(fs::FS &fs, const char * path, const char * message);
 };
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+LiquidCrystal_I2C lcd(0x27, 16, 2); 
+byte customChar1[] = {
+        B00011,
+        B00011,    
+        B00000,
+        B00000,
+        B00000,
+        B00000,
+        B00000,
+        B00000
+};
+
+void initLCD(void){
+    lcd.init();
+    lcd.backlight();
+}
+
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
+
+void class_data_controller::imprimirLCD(int temp, int hum, String date){
+    lcd.clear();
+    lcd.createChar(0, customChar1);
+    lcd.setCursor(0,0);
+    lcd.print(date);
+    lcd.setCursor(0,1);
+    lcd.print(String(temp));
+    lcd.setCursor(2,1);
+    lcd.write(0);
+    lcd.setCursor(3,1);
+    lcd.print("C");
+    lcd.setCursor(5,1);
+    lcd.print("Hum:" + String(hum)+"%");
+}
 
 RTC_DS1307 rtc;
 char daysOfTheWeek[7][12] = {"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
 
-void class_data_controller::initRTC ( void ){
+void class_data_controller::initRTC(void){
     if (! rtc.begin()) {
         Serial.println("Couldn't find RTC");
         Serial.flush();
@@ -28,7 +70,7 @@ void class_data_controller::initRTC ( void ){
     }
 }
 
-String class_data_controller::getDataTime ( void ){
+String class_data_controller::getDataTime(void){
     DateTime now = rtc.now();
     int y = now.year();
     int mon = now.month();

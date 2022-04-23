@@ -1,5 +1,7 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_tasks{
-  public:
+
+  public:   //Variables Públicas
     unsigned long timeTemp = 0;
     unsigned long timeHum = 0;
     unsigned long intervaloTemp = 5000;
@@ -11,23 +13,26 @@ class class_tasks{
     unsigned long timeDecision = 0;
     unsigned long intervaloDecision = 1000;
 
-  public:
-    int get_temperature( void );
-    int get_humidity( void );
-    int get_brightness (void);
-    int get_movement ( void );
-    void LED_ON (void);
-    void LED_OFF (void);
-    void Buzzer_ON (void);
-    void Buzzer_OFF (void);
-    void decision (void);
-    void printTempHumDate (int temp, int hum, String date);
-    String get_date (void);
+  public:   //Métodos Públicos
+    int get_temperature(void);
+    int get_humidity(void);
+    int get_brightness(void);
+    int get_movement(void);
+    void LED_ON(void);
+    void LED_OFF(void);
+    void Buzzer_ON(void);
+    void Buzzer_OFF(void);
+    void decision(void);
+    void printTempHumDate(int temp, int hum, String date);
+    String get_date(void);
     void create_file(fs::FS &fs, const char * path, const char * message);
-    void append_file(fs::FS &fs, const char * path, const char * message);
+    void append_file( fs::FS &fs, const char * path, const char * message);
 };
 
-int class_tasks::get_temperature( void ){
+
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
+
+int class_tasks::get_temperature(void){
   if((millis() - timeTemp) >= intervaloTemp ){
     timeTemp = millis();
     float temperature = sensor.obtener_temperatura();
@@ -39,7 +44,7 @@ int class_tasks::get_temperature( void ){
   }
 }
 
-int class_tasks::get_humidity( void ){
+int class_tasks::get_humidity(void){
   if((millis() - timeHum) >= intervaloHum ){
     timeHum = millis();
     float humidity = sensor.obtener_humedad();
@@ -74,32 +79,30 @@ int class_tasks::get_movement(void){
   }
 }
 
-
-void class_tasks::LED_ON (void){
+void class_tasks::LED_ON(void){
   actuadores.EncenderLED();
 }
-void class_tasks::LED_OFF (void){
+void class_tasks::LED_OFF(void){
   actuadores.ApagarLED();
 }
-void class_tasks::Buzzer_ON (void){
+void class_tasks::Buzzer_ON(void){
   
   for(int i =1;i<=5;i++)
   {
     actuadores.EncenderBuzzer();
     delay(2000);
   }
-  
 }
 
-void class_tasks::Buzzer_OFF( void ){
+void class_tasks::Buzzer_OFF(void){
   actuadores.ApagarBuzzer();
 }
 
-void class_tasks::printTempHumDate (int temp, int hum, String date){
-  actuadores.imprimirLCD(temp, hum, date);
+void class_tasks::printTempHumDate(int temp, int hum, String date){
+  control.imprimirLCD(temp, hum, date);
 }
 
-String class_tasks::get_date ( void ){
+String class_tasks::get_date(void){
   return control.getDataTime();
 }
 
