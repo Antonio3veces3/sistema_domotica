@@ -49,18 +49,8 @@ int class_sensors::obtener_luminosidad ( void ){
   
 }
 
-//Sensor de mdetección movimiento PIR
+//Sensor de detección movimiento PIR
 int class_sensors::obtener_movimiento ( void ){
   valorPIR = digitalRead(15); //PIN PIR
   return valorPIR;
-}
-
-
-
-
-
-
-
-//Sensor de movimiento PIR
-//Actuador Buzzer Activo
-//Actuador Relay de Estado Solido 
+} 
