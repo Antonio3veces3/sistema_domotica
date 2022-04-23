@@ -11,7 +11,7 @@ class class_actuators {
     void initLCD(void);
     void EncenderLED(void);
     void ApagarLED(void);  
-    void imprimirLCD(float temp, float hum);
+    void imprimirLCD(int temp, int hum, String date);
     void EncenderBuzzer(void);
     void ApagarBuzzer(void);
                          
@@ -46,35 +46,37 @@ void initLCD(void){
     lcd.backlight();
 }
 
-void class_actuators::imprimirLCD(float temp, float hum){
+void class_actuators::imprimirLCD(int temp, int hum, String date){
     lcd.clear();
     lcd.createChar(0, customChar1);
     lcd.setCursor(0,0);
-    lcd.print("Temp: " + String(temp) + " C");
-    lcd.setCursor(11,0);
-    lcd.write(0);
-    lcd.setCursor(12,0);
-    lcd.print("C");
+    lcd.print(date);
     lcd.setCursor(0,1);
-    lcd.print("Hum: " + String(hum) + " %");
+    lcd.print(String(temp));
+    lcd.setCursor(2,1);
+    lcd.write(0);
+    lcd.setCursor(3,1);
+    lcd.print("C");
+    lcd.setCursor(5,1);
+    lcd.print("Hum:" + String(hum)+"%");
 }
 
 void class_actuators::EncenderLED(void){
-    digitalWrite(0,LOW); 
+    digitalWrite(34,LOW); //PIN RELAY
 }
 
 void class_actuators::ApagarLED(void){
-    digitalWrite(0,HIGH); 
+    digitalWrite(34,HIGH);  //PIN RELAY
 }
 
 void class_actuators::EncenderBuzzer(void){
     for(int x=0; x<180; x++){
         sinVal = (sin(x*(3.1412/180)));
         toneVal = 2000 + (int(sinVal*1000));
-        tone(14, toneVal);
+        //tone(35, toneVal); //PIN BUZZER
         delay(2);
     }
 }
 void class_actuators::ApagarBuzzer(void){
-    noTone(14);
+   // noTone(35); //PIN BUZZER
 }

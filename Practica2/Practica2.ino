@@ -13,8 +13,8 @@
 *      E-MAIL:      mmondragon@uco.mx                                        *
 *      COMPAÑÍA:    Universidad de Colima - Facultad de Telemática.          *
 *                                                                            *
-*      uC:          ESP8266.                                                 *
-*      Nombre:      ESP8266.                                                 *
+*      uC:          ESP832.                                                 *
+*      Nombre:      ESP832.                                                 *
 *                                                                            *
 ******************************************************************************
 *                                                                            *
@@ -23,39 +23,152 @@
 *                                                                            *
 ******************************************************************************/
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ BANDERAS ~~~~~~~~~~~~~~*/
-
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "Practica2.h"
+#include <ArduinoJson.h>
+#include <stdio.h>
+#include <iostream>
+#include <cstring>
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+//Libreria wifi esp32
+#include <WiFi.h>
+#include <PubSubClient.h>
 
+/*#define SD_CS 5
+#define SD_SCK 18
+#define SD_MOSI 23
+#define SD_MISO 19
+File file;
+
+void writeFile(fs::FS &fs, const char * path, const char * message){
+  Serial.printf("Writing file: %s\n", path);
+
+  File file = fs.open(path, FILE_WRITE);
+  if(!file){
+    Serial.println("Failed to open file for writing");
+    return;
+  }
+  if(file.print(message)){
+    Serial.println("File written");
+  } else {
+    Serial.println("Write failed");
+  }
+  file.close();
+}*/
+
+const char* ssid = "zaholy";
+const char* password = "pelusatony";
+
+const char* mqtt_server = "test.mosquitto.org";
+
+WiFiClient espClient;
+
+PubSubClient client(espClient);
+
+unsigned long lastMsg = 0;
+
+#define MSG_BUFFER_SIZE (50)
+
+char msg[MSG_BUFFER_SIZE];
+
+int value = 0;
+
+void setup_wifi() {
+  delay(10);
+  // Empezamos por conectarnos a una red WiFi
+  Serial.println();
+  Serial.print("Conectado a ");
+  Serial.println(ssid);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(ssid, password);
+
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  randomSeed(micros());
+  Serial.println("");
+  Serial.println("WiFi conectado");
+  Serial.println("Dirección IP: ");
+  Serial.println(WiFi.localIP());
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Mensaje del tema [");
+  Serial.print(topic);
+  Serial.print("] : ");
+  
+  String message;
+  for (int i = 0; i < length; i++) {
+    message = message + (char) payload[i];
+  }
+  Serial.print(message);
+  Serial.println();
+}
+
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Intentando la conexión MQTT...");
+    String clientId = "ESP8266Client-";
+    clientId += String(random(0xffff), HEX);
+    if (client.connect(clientId.c_str())) {
+      Serial.println("conectado");
+      client.subscribe("esp32/#");
+    } else {
+      Serial.print("fallido, rc =");
+      Serial.print(client.state());
+      Serial.println(" inténtalo de nuevo en 5 segundos");
+      delay(5000);
+    }
+  }
+}
 
 void setup( void ) {
 
   Serial.begin ( 115200 );
   beginDHT11();
   initLCD();
-  pinMode(12, OUTPUT); //SENSOR DHT11
-  pinMode(13, INPUT); //SENSOR PIR
-  pinMode(14, OUTPUT); //BUZZER
-  pinMode(0, OUTPUT); //RELAY RSS 
-  digitalWrite(12,LOW);
+  control.initRTC();
+  //control.initSD(18, 19, 23, 5);
+  pinMode(32, OUTPUT); //SENSOR DHT11
+  pinMode(15, INPUT); //SENSOR PIR
+  pinMode(35, OUTPUT); //BUZZER
+  pinMode(34, OUTPUT); //RELAY RSS 
+  digitalWrite(34,LOW); //iNICIALIAR RELAY
+  pinMode(4, INPUT); //SENSOR LDR
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+
+  /*SPIClass sd_spi(HSPI);
+    sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
+  
+    if (!SD.begin(SD_CS, sd_spi))
+        Serial.println("SD Card: mounting failed.");
+    else
+        Serial.println("SD Card: mounted.");
+
+
+  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n");*/
 }
 
 void loop ( void ) {
-  
-  /*tasks.get_temperature();
-  tasks.get_humidity();
-  tasks.get_brightness();
-  tasks.get_motion(); 
-  tasks.get_movement();*/
-
-  //SI JALA
+  if (!client.connected()) {
+    reconnect();
+  }
+  client.loop();
+  String date = tasks.get_date();
   int movement = tasks.get_movement();
   int brightness = tasks.get_brightness();
-  float temperature = tasks.get_temperature();
-  float humidity = tasks.get_humidity();
-
+  int temperature = tasks.get_temperature();
+  int humidity = tasks.get_humidity();
+  int n = date.length();
+  char dateString[n+1];
+  strcpy(dateString, date.c_str());
   if(brightness > 800 &&  movement == 1){
       tasks.LED_ON();
       Serial.println("ENCENDER LED");
@@ -66,14 +179,19 @@ void loop ( void ) {
           Serial.println("APAGAR LED");
         }
       }
-  if (temperature!= 0 or humidity !=0)
+  if (temperature!= 0 and humidity !=0)
   {
     Serial.println("IMPRIMIR DATOS");
-    tasks.printTempHum(temperature, humidity);
+    tasks.printTempHumDate(temperature, humidity, date);
+    
+    
+    char  buf [300];
+    snprintf(buf, sizeof(buf),"{\"time\":\"%d\",\"temp\":%d,\"humedad\":%d}", dateString, temperature, humidity);
+    Serial.println(buf);
+    client.publish("esp32/data", buf);
   }
   
-
-  if(temperature >= 25.00)
+  if(temperature >= 25)
   {
     tasks.Buzzer_ON();
   }else{

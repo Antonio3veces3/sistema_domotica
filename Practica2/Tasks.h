@@ -1,3 +1,7 @@
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
+
 class class_tasks{
   public:
     unsigned long timeTemp = 0;
@@ -12,8 +16,8 @@ class class_tasks{
     unsigned long intervaloDecision = 1000;
 
   public:
-    float get_temperature( void );
-    float get_humidity( void );
+    int get_temperature( void );
+    int get_humidity( void );
     int get_brightness (void);
     int get_movement ( void );
     void LED_ON (void);
@@ -21,10 +25,13 @@ class class_tasks{
     void Buzzer_ON (void);
     void Buzzer_OFF (void);
     void decision (void);
-    void printTempHum (float temp, float hum);
+    void printTempHumDate (int temp, int hum, String date);
+    String get_date (void);
+    void create_file(fs::FS &fs, const char * path, const char * message);
+    void append_file(fs::FS &fs, const char * path, const char * message);
 };
 
-float class_tasks::get_temperature( void ){
+int class_tasks::get_temperature( void ){
   if((millis() - timeTemp) >= intervaloTemp ){
     timeTemp = millis();
     float temperature = sensor.obtener_temperatura();
@@ -36,7 +43,7 @@ float class_tasks::get_temperature( void ){
   }
 }
 
-float class_tasks::get_humidity( void ){
+int class_tasks::get_humidity( void ){
   if((millis() - timeHum) >= intervaloHum ){
     timeHum = millis();
     float humidity = sensor.obtener_humedad();
@@ -92,6 +99,18 @@ void class_tasks::Buzzer_OFF( void ){
   actuadores.ApagarBuzzer();
 }
 
-void class_tasks::printTempHum (float temp, float hum){
-  actuadores.imprimirLCD(temp, hum);
+void class_tasks::printTempHumDate (int temp, int hum, String date){
+  actuadores.imprimirLCD(temp, hum, date);
 }
+
+String class_tasks::get_date ( void ){
+  return control.getDataTime();
+}
+
+/*void class_tasks::create_file(fs::FS &fs, const char * path, const char * message){
+  control.createFile(fs, path, message);
+}
+
+void class_tasks::append_file(fs::FS &fs, const char * path, const char * message){
+  control.appendFile(fs, path, message);
+}*/
