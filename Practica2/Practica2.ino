@@ -151,7 +151,9 @@ void setup(void) {
   else
       Serial.println("SD Card: mounted.");
 
-  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
+  tasks.create_file(SD, "/Clima.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
+  tasks.create_file(SD, "/Acciones.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
+  tasks.create_file(SD, "/Advertencias.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~FUNCIÓN PRINCIPAL~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -178,12 +180,12 @@ void loop ( void ) {
       char accion[500];
       strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str()); //Crea un JSON y se guarda en el buffer de accion
       client.publish("e sp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-      tasks.append_file(SD, "/Data.txt", accion);
+      tasks.append_file(SD, "/Acciones.txt", accion);
  
       char advertencia[500];
       strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());//Crea un JSON de advertencia y se guarda en el buffer advertencia
       client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
-      tasks.append_file(SD, "/Data.txt", advertencia); //Agrega el JSON al archivo Data.txt
+      tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Data.txt
 
        }else{
          if (brightness != -1 or movement != -1)
@@ -194,7 +196,7 @@ void loop ( void ) {
           char accion[500];
           strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
           client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-          tasks.append_file(SD, "/Data.txt", accion); //Agrega el JSON al archivo Data.txt 
+          tasks.append_file(SD, "/Acciones.txt", accion); //Agrega el JSON al archivo Data.txt 
          }
        }
     if (temperature!= 0 and humidity !=0)
@@ -205,7 +207,7 @@ void loop ( void ) {
     char clima[500];
     strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str()); //Crea un JSON de clima  y se guarda en el buffer clima
     client.publish("esp32-RALMT/clima", clima); //Publica un JSON en el topic /clima 
-    tasks.append_file(SD, "/Data.txt", clima); //Agrega el JSON al archivo Data.txt
+    tasks.append_file(SD, "/Clima.txt", clima); //Agrega el JSON al archivo Data.txt
    }
   
   if(temperature >= 40)
@@ -214,12 +216,12 @@ void loop ( void ) {
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
     client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-    tasks.append_file(SD, "/Data.txt", accion);   //Agrega el JSON al archivo Data.txt 
+    tasks.append_file(SD, "/Acciones.txt", accion);   //Agrega el JSON al archivo Data.txt 
  
     char advertencia[500];
     strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str()); //Crea un JSON de advertencia y se guarda en el buffer advertencia
     client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
-    tasks.append_file(SD, "/Data.txt", advertencia); //Agrega el JSON al archivo Data.txt 
+    tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Data.txt 
  
    }else{
     tasks.Buzzer_OFF(); //Apaga el buzzer
@@ -227,7 +229,7 @@ void loop ( void ) {
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
     client.publish("e //Apaga el buzzersp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-    tasks.append_file(SD, "/Data.txt", accion);  //Agrega el JSON al archivo Data.  txt
+    tasks.append_file(SD, "/Acciones.txt", accion);  //Agrega el JSON al archivo Data.  txt
     }  
   delay(1000);
 }
