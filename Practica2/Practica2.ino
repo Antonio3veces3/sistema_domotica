@@ -97,7 +97,7 @@ void reconnect() {
     clientId += String(random(0xffff), HEX);
     if (client.connect(clientId.c_str())) {
       Serial.println("conectado");
-      client.subscribe("esp32/#");
+      client.subscribe("esp32-RALMT/#");
     } else {
       Serial.print("fallido, rc =");
       Serial.print(client.state());
@@ -112,12 +112,13 @@ void setup( void ) {
   Serial.begin ( 115200 );
   beginDHT11();
   initLCD();
+  actuadores.initBuzzer();
   control.initRTC();
   pinMode(32, OUTPUT); //SENSOR DHT11
   pinMode(15, INPUT); //SENSOR PIR
-  pinMode(35, OUTPUT); //BUZZER
-  pinMode(34, OUTPUT); //RELAY RSS 
-  digitalWrite(34,LOW); //INICIALIAR RELAY
+  pinMode(26, OUTPUT); //BUZZER
+  pinMode(25, OUTPUT); //RELAY RSS 
+  digitalWrite(25,LOW); //INICIALIAR RELAY
 
   setup_wifi();
   client.setServer(mqtt_server, 1883);
@@ -155,12 +156,12 @@ void loop ( void ) {
       Serial.println("ENCENDER LED");
       char accion[500];
       strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str());
-      client.publish("esp32/accion", accion);
+      client.publish("esp32-RALMT/accion", accion);
       tasks.append_file(SD, "/Data.txt", accion);
 
       char advertencia[500];
       strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());
-      client.publish("esp32/advertencia", advertencia);
+      client.publish("esp32-RALMT/advertencia", advertencia);
       tasks.append_file(SD, "/Data.txt", advertencia);
       }else{
         if (brightness != -1 or movement != -1)
@@ -170,7 +171,7 @@ void loop ( void ) {
           
           char accion[500];
           strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str());
-          client.publish("esp32/accion", accion);
+          client.publish("esp32-RALMT/accion", accion);
           tasks.append_file(SD, "/Data.txt", accion);
         }
       }
@@ -181,21 +182,21 @@ void loop ( void ) {
 
     char clima[500];
     strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str());
-    client.publish("esp32/clima", clima);
+    client.publish("esp32-RALMT/clima", clima);
     tasks.append_file(SD, "/Data.txt", clima);
   }
   
-  if(temperature >= 25)
+  if(temperature >= 40)
   {
     tasks.Buzzer_ON();
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str());
-    client.publish("esp32/accion", accion);
+    client.publish("esp32-RALMT/accion", accion);
     tasks.append_file(SD, "/Data.txt", accion);
 
     char advertencia[500];
     strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str());
-    client.publish("esp32/advertencia", advertencia);
+    client.publish("esp32-RALMT/advertencia", advertencia);
     tasks.append_file(SD, "/Data.txt", advertencia);
 
   }else{
@@ -203,7 +204,7 @@ void loop ( void ) {
     
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str());
-    client.publish("esp32/accion", accion);
+    client.publish("esp32-RALMT/accion", accion);
     tasks.append_file(SD, "/Data.txt", accion);
   }  
 delay(1000);

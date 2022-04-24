@@ -1,3 +1,7 @@
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
+#include <Config.h>
+#include <EasyBuzzer.h>
+
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
 
@@ -6,7 +10,7 @@ class class_actuators {
      int toneVal = 0;
 
  public:   //Métodos Públicos             
-    //void initLCD(void);
+    void initBuzzer(void);
     void EncenderLED(void);
     void ApagarLED(void);  
     void EncenderBuzzer(void);
@@ -14,22 +18,24 @@ class class_actuators {
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
+
+void class_actuators::initBuzzer(void){
+  EasyBuzzer.setPin(26);
+}
+
 void class_actuators::EncenderLED(void){
-    digitalWrite(36,LOW); //PIN RELAY
+    digitalWrite(25,LOW); //PIN RELAY
 }
 
 void class_actuators::ApagarLED(void){
-    digitalWrite(36,HIGH);  //PIN RELAY
+    digitalWrite(25,HIGH);  //PIN RELAY
 }
 
 void class_actuators::EncenderBuzzer(void){
-    for(int x=0; x<180; x++){
-        sinVal = (sin(x*(3.1412/180)));
-        toneVal = 2000 + (int(sinVal*1000));
-        //tone(35, toneVal); //PIN BUZZER
-        delay(2);
-    }
+  EasyBuzzer.update();
+  EasyBuzzer.beep(1000);
 }
 void class_actuators::ApagarBuzzer(void){
-   //noTone(35); //PIN BUZZER
+   EasyBuzzer.update();
+   EasyBuzzer.stopBeep();
 }
