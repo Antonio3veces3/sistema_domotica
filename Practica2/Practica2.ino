@@ -66,6 +66,11 @@ unsigned long lastMsg = 0; //Almacenar último mensaje recibido
 #define MSG_BUFFER_SIZE (50)
 char msg[MSG_BUFFER_SIZE];
 
+#define SD_CS 5    //GPIO pin SD_CS
+#define SD_SCK 18  //GPIO pin SD_SCK
+#define SD_MOSI 23 //GPIO pin SD_MOSI
+#define SD_MISO 19 //GPIO pin SD_MISO
+
 //Función conexión a red WiFi
 void setup_wifi() {
   delay(10);
@@ -132,11 +137,11 @@ void setup(void) {
   initBuzzer();
   initRTC();
   
-  pinMode(dht11, OUTPUT); //SENSOR DHT11 modo salida
-  pinMode(pir, INPUT); //SENSOR PIR modo entrada
-  pinMode(buzzer, OUTPUT); //BUZZER modo salida
-  pinMode(relay, OUTPUT); //RELAY RSS  modo salida
-  digitalWrite(relay,LOW); //Inicia el relay encendido
+  pinMode(32, OUTPUT); //SENSOR DHT11 modo salida
+  pinMode(15, INPUT); //SENSOR PIR modo entrada
+  pinMode(26, OUTPUT); //BUZZER modo salida
+  pinMode(25, OUTPUT); //RELAY RSS  modo salida
+  digitalWrite(25,LOW); //Inicia el relay encendido
 
   setup_wifi(); //Conectarse a WiFi
   client.setServer(mqtt_server, 1883); //Usar el puerto 1883
@@ -162,30 +167,32 @@ void loop ( void ) {
   //Se conecta al Broker MQTT Mosquitto
   if (!client.connected()) {
     reconnect();
+  }
 
-  //Procesar las tramas MQTT
+  client.loop(); //Procesar las tramas MQTT
+    
   String date =  tasks.get_date();
   int movement = tasks.get_movement(); //Obtiene el valor del movimiento
   int brightness = tasks.get_brightness();  //Obtiene el valor de la luminosidad
   int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
   int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
 
- int n = date.length(); //Longitud de la variable date
- char dateString[n+1]; //Crea un char buffer char
- strcpy(dateString, date.c_str()); //Guarda el string en un buffer char
+  int n = date.length(); //Longitud de la variable date
+  char dateString[n+1]; //Crea un char buffer char
+  strcpy(dateString, date.c_str()); //Guarda el string en un buffer char
 
    if(brightness > 340 and  movement  == 1){
       tasks.LED_ON(); //Funcion que enciende el LED
       Serial.println("ENCENDER LED");
       char accion[500];
       strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str()); //Crea un JSON y se guarda en el buffer de accion
-      client.publish("e sp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-      tasks.append_file(SD, "/Acciones.txt", accion);
+      client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
+      tasks.append_file(SD, "/Acciones.txt", accion); //Agrega el JSON al archivo Acciones.txt
  
       char advertencia[500];
       strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());//Crea un JSON de advertencia y se guarda en el buffer advertencia
       client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
-      tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Data.txt
+      tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Advertencias.txt
 
        }else{
          if (brightness != -1 or movement != -1)
@@ -196,18 +203,20 @@ void loop ( void ) {
           char accion[500];
           strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
           client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-          tasks.append_file(SD, "/Acciones.txt", accion); //Agrega el JSON al archivo Data.txt 
+          tasks.append_file(SD, "/Acciones.txt", accion); //Agrega el JSON al archivo Acciones.txt 
          }
        }
-    if (temperature!= 0 and humidity !=0)
+    if (temperature!= 0 or humidity !=0)
   {
-    tasks.printTempHumDate(temperature, humidity, date); //Imprime los dato en el LCD
+    tasks.printTempHumDate(temperature, humidity, date); //Imprime los datos en el LCD
+    Serial.println("TEMP: " + String(temperature));
+    Serial.println("HUM: " + String(humidity));
     Serial.println("DATOS RECOPILADOS");
 
     char clima[500];
     strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str()); //Crea un JSON de clima  y se guarda en el buffer clima
     client.publish("esp32-RALMT/clima", clima); //Publica un JSON en el topic /clima 
-    tasks.append_file(SD, "/Clima.txt", clima); //Agrega el JSON al archivo Data.txt
+    tasks.append_file(SD, "/Clima.txt", clima); //Agrega el JSON al archivo Clima.txt
    }
   
   if(temperature >= 40)
@@ -216,12 +225,12 @@ void loop ( void ) {
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
     client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-    tasks.append_file(SD, "/Acciones.txt", accion);   //Agrega el JSON al archivo Data.txt 
+    tasks.append_file(SD, "/Acciones.txt", accion);   //Agrega el JSON al archivo Acciones.txt 
  
     char advertencia[500];
     strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str()); //Crea un JSON de advertencia y se guarda en el buffer advertencia
     client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
-    tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Data.txt 
+    tasks.append_file(SD, "/Advertencias.txt", advertencia); //Agrega el JSON al archivo Advertencias.txt 
  
    }else{
     tasks.Buzzer_OFF(); //Apaga el buzzer
@@ -229,7 +238,8 @@ void loop ( void ) {
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
     client.publish("e //Apaga el buzzersp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
-    tasks.append_file(SD, "/Acciones.txt", accion);  //Agrega el JSON al archivo Data.  txt
-    }  
+    tasks.append_file(SD, "/Acciones.txt", accion);  //Agrega el JSON al archivo Acciones.txt
+  }  
   delay(1000);
 }
+  

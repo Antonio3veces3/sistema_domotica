@@ -36,7 +36,7 @@ class class_tasks{
 int class_tasks::get_temperature(void){
   if((millis() - timeTemp) >= intervaloTemp ){ //Intervalo de 5 segundos
     timeTemp = millis(); //Guarda el tiempo actual
-    int temperature = sensor.obtener_temperatura(); //Obtiene temperatura
+    float temperature = sensor.obtener_temperatura(); //Obtiene temperatura
     Serial.print("Temperatura: ");
     Serial.println(temperature);
     return temperature; //Retorna temperatura
@@ -49,7 +49,7 @@ int class_tasks::get_temperature(void){
 int class_tasks::get_humidity(void){
   if((millis() - timeHum) >= intervaloHum ){ //Intervalo de 5 segundos
     timeHum = millis(); //Guarda el tiempo actual
-    int humidity = sensor.obtener_humedad(); //Obtiene humedad
+    float humidity = sensor.obtener_humedad(); //Obtiene humedad
     Serial.print("Humedad: ");
     Serial.println(humidity);
     return humidity; //Retorna humedad
@@ -95,7 +95,10 @@ void class_tasks::LED_OFF(void){
 
 //Enciende el buzzer
 void class_tasks::Buzzer_ON(void){
-  actuadores.EncenderBuzzer();
+  for(int i =1;i<=5;i++)
+  {
+    actuadores.EncenderBuzzer();
+  }
 }
 
 //Apaga el buzzer

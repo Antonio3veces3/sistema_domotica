@@ -22,7 +22,7 @@ class class_sensors {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-DHT dht( dht11, DHT11 ); //Crea instancia DHT11
+DHT dht( 32, DHT11 ); //Crea instancia DHT11
 
 //Inicilizar el sensor DHT11
 void beginDHT11 ( void ){
@@ -45,12 +45,12 @@ int class_sensors::obtener_humedad ( void ){
 
 //Método para obtener la luminisidad
 int class_sensors::obtener_luminosidad ( void ){
-  valorLDR = analogRead(ldr); 
+  valorLDR = analogRead(39); 
   return valorLDR; //Retorna la luminosidad
 }
 
 //Método para obtener el movimiento
 int class_sensors::obtener_movimiento ( void ){
-  valorPIR = digitalRead(pir); 
+  valorPIR = digitalRead(15); 
   return valorPIR; //Retorna el movimiento
 } 

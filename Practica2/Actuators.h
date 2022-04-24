@@ -17,19 +17,19 @@ class class_actuators {
 
 //Inicializa el buzzer
 void initBuzzer(void){
-  EasyBuzzer.setPin(buzzer); 
+  EasyBuzzer.setPin(26); 
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Enciende el LED
 void class_actuators::EncenderLED(void){
-    digitalWrite(relay,LOW); //PIN RELAY
+    digitalWrite(25,LOW); //PIN RELAY
 }
 
 //Apaga el LED
 void class_actuators::ApagarLED(void){
-    digitalWrite(relay,HIGH);  //PIN RELAY
+    digitalWrite(25,HIGH);  //PIN RELAY
 }
 
 //Enciende el buzzer
