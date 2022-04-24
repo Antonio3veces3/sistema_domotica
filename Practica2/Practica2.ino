@@ -113,13 +113,11 @@ void setup( void ) {
   beginDHT11();
   initLCD();
   control.initRTC();
-  //control.initSD(18, 19, 23, 5);
   pinMode(32, OUTPUT); //SENSOR DHT11
   pinMode(15, INPUT); //SENSOR PIR
   pinMode(35, OUTPUT); //BUZZER
   pinMode(34, OUTPUT); //RELAY RSS 
-  digitalWrite(34,LOW); //iNICIALIAR RELAY
-  pinMode(4, INPUT); //SENSOR LDR
+  digitalWrite(34,LOW); //INICIALIAR RELAY
 
   setup_wifi();
   client.setServer(mqtt_server, 1883);
@@ -152,7 +150,7 @@ void loop ( void ) {
   char dateString[n+1];
   strcpy(dateString, date.c_str());
 
-  if(brightness > 800 and  movement == 1){
+  if(brightness > 340 and  movement == 1){
       tasks.LED_ON();
       Serial.println("ENCENDER LED");
       char accion[500];
@@ -169,6 +167,7 @@ void loop ( void ) {
         {
           tasks.LED_OFF();
           Serial.println("APAGAR LED");
+          
           char accion[500];
           strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str());
           client.publish("esp32/accion", accion);
@@ -177,8 +176,8 @@ void loop ( void ) {
       }
   if (temperature!= 0 and humidity !=0)
   {
-    Serial.println("IMPRIMIR DATOS");
     tasks.printTempHumDate(temperature, humidity, date);
+    Serial.println("DATOS RECOPILADOS");
 
     char clima[500];
     strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str());

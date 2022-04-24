@@ -9,18 +9,17 @@ class class_actuators {
     //void initLCD(void);
     void EncenderLED(void);
     void ApagarLED(void);  
-    //void imprimirLCD(int temp, int hum, String date);
     void EncenderBuzzer(void);
     void ApagarBuzzer(void);
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
 void class_actuators::EncenderLED(void){
-    digitalWrite(34,LOW); //PIN RELAY
+    digitalWrite(36,LOW); //PIN RELAY
 }
 
 void class_actuators::ApagarLED(void){
-    digitalWrite(34,HIGH);  //PIN RELAY
+    digitalWrite(36,HIGH);  //PIN RELAY
 }
 
 void class_actuators::EncenderBuzzer(void){
@@ -32,5 +31,5 @@ void class_actuators::EncenderBuzzer(void){
     }
 }
 void class_actuators::ApagarBuzzer(void){
-   // noTone(35); //PIN BUZZER
+   //noTone(35); //PIN BUZZER
 }

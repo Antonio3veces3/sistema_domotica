@@ -62,7 +62,8 @@ int class_tasks::get_humidity(void){
 int class_tasks::get_brightness(void){
   if((millis() - timeLdr) >= intervaloLdr){
     timeLdr = millis();
-    int brightness = sensor.obtener_luminosidad();
+    //int bns = sensor.obtener_luminosidad();
+    int brightness = map(sensor.obtener_luminosidad(), 0, 1000, 0, 100);
     Serial.println("Luminosidad: " + String(brightness));
     return brightness;
   }else{
@@ -117,16 +118,14 @@ void class_tasks::append_file(fs::FS &fs, const char * path, const char * messag
   control.appendFile(fs, path, message);
 }
 
-
-        
 String class_tasks::create_json_temp_hum(String date, int temp, int hum){
-  control.crear_json_temp_hum(date, temp, hum);
+  return control.crear_json_temp_hum(date, temp, hum);
 }
 
 String class_tasks::create_json_action(String date, String action){
-  control.crear_json_action( date,  action);
+  return control.crear_json_action( date, action);
 }
 
 String class_tasks::create_json_warning(String date, String warning){
-  control.crear_json_warning( date,  warning);
+  return control.crear_json_warning( date, warning);
 }

@@ -44,8 +44,8 @@ int class_sensors::obtener_humedad ( void ){
 
 //Sensor de luminosidad LDR
 int class_sensors::obtener_luminosidad ( void ){
-  valorLDR = analogRead(4); //PIN LDR
-  return  valorLDR;
+  valorLDR = analogRead(39); //PIN LDR
+  return valorLDR;
   
 }
 

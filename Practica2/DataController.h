@@ -88,16 +88,6 @@ String class_data_controller::getDataTime(void){
     return date;
 }
 
-/*void class_data_controller::initSD (int SD_SCK, int SD_MISO, int SD_MOSI, int SD_CS){
-    SPIClass sd_spi(HSPI);
-    sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
-  
-    if (!SD.begin(SD_CS, sd_spi))
-        Serial.println("SD Card: mounting failed.");
-    else
-        Serial.println("SD Card: mounted.");
-}*/
-
 void class_data_controller::createFile(fs::FS &fs, const char * path, const char * message){
   Serial.printf("Writing file: %s\n", path);
 
@@ -123,6 +113,7 @@ void class_data_controller::appendFile(fs::FS &fs, const char * path, const char
       return;
   }
   if(file.print(message)){
+      file.print(",\n");
       Serial.println("Message appended");
   } else {
       Serial.println("Append failed");
@@ -137,6 +128,7 @@ String class_data_controller::crear_json_temp_hum(String date, int temp, int hum
   doc["temperatura"]   = temp;
   doc["humedad"] = hum; 
   serializeJson(doc, newJson);
+  
   return newJson;
 }
 
@@ -157,4 +149,3 @@ String class_data_controller::crear_json_warning(String date, String warning){
     serializeJson(doc, newJson);
     return newJson;
 }
-
