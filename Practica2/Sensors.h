@@ -1,56 +1,56 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//Sensor de temperatura y humedad DHT11
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+//Librerías para sensor DHT11
 #include <DHT.h>
 #include <DHT_U.h>
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 class class_sensors {
 
-  public:                                   //Variables Públicas
-    int temperatura, humedad;            //Reciben la temperatura y humedad del sensor DHT11
-    int valorLDR = 0;                    // Variable donde se almacena el valor del LDR
+  public: //Variables Públicas
+    int temperatura, humedad;            
+    int valorLDR = 0; 
     int valorPIR = 0;
 
- public:                                  //Métodos Públicas
-    int obtener_temperatura ( void );   //Método para obtener la temperatura del sensor DHT11
-    int obtener_humedad ( void );       //Método para obtener la humedad del sensor DHT11
-    int obtener_luminosidad ( void );   //Método para obtener la luminisidad
-    int obtener_movimiento ( void );   //Método para obtener el movimiento
-
-    void beginDHT11 ( void );            //Método para inicilizar el sensor DHT11
+ public:  //Métodos Públicos
+    int obtener_temperatura(void);  
+    int obtener_humedad(void);      
+    int obtener_luminosidad(void);   
+    int obtener_movimiento(void);  
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-//Sensor de temperatura y humedad DHT11
-DHT dht( 32, DHT11 ); //PIN DHT11
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
+DHT dht( dht11, DHT11 ); //Crea instancia DHT11
 
+//Inicilizar el sensor DHT11
 void beginDHT11 ( void ){
   dht.begin();
 }
 
-//Sensor de temperatura y humedad DHT11
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+//Método para obtener la temperatura del sensor DHT11
 int class_sensors::obtener_temperatura ( void ){
   temperatura = dht.readTemperature();
-  return temperatura;
+  return temperatura; //Retorna la temperatura
 }
 
+ //Método para obtener la humedad del sensor DHT11
 int class_sensors::obtener_humedad ( void ){
   humedad = dht.readHumidity();
-  return humedad;
+  return humedad; //Retorna la humedad
 }
 
-//Sensor de luminosidad LDR
+//Método para obtener la luminisidad
 int class_sensors::obtener_luminosidad ( void ){
-  valorLDR = analogRead(39); //PIN LDR
-  return valorLDR;
-  
+  valorLDR = analogRead(ldr); 
+  return valorLDR; //Retorna la luminosidad
 }
 
-//Sensor de detección movimiento PIR
+//Método para obtener el movimiento
 int class_sensors::obtener_movimiento ( void ){
-  valorPIR = digitalRead(15); //PIN PIR
-  return valorPIR;
+  valorPIR = digitalRead(pir); 
+  return valorPIR; //Retorna el movimiento
 } 

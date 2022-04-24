@@ -1,40 +1,44 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+//Librerías para manejo del Buzzer
 #include <Config.h>
-#include <EasyBuzzer.h>
+#include <EasyBuzzer.h> 
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
-
-  public:  //Variables Públicas
-     int sinVal = 0;
-     int toneVal = 0;
-
  public:   //Métodos Públicos             
-    void initBuzzer(void);
-    void EncenderLED(void);
+    void EncenderLED(void); 
     void ApagarLED(void);  
     void EncenderBuzzer(void);
     void ApagarBuzzer(void);
 };
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-void class_actuators::initBuzzer(void){
-  EasyBuzzer.setPin(26);
+//Inicializa el buzzer
+void initBuzzer(void){
+  EasyBuzzer.setPin(buzzer); 
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+//Enciende el LED
 void class_actuators::EncenderLED(void){
-    digitalWrite(25,LOW); //PIN RELAY
+    digitalWrite(relay,LOW); //PIN RELAY
 }
 
+//Apaga el LED
 void class_actuators::ApagarLED(void){
-    digitalWrite(25,HIGH);  //PIN RELAY
+    digitalWrite(relay,HIGH);  //PIN RELAY
 }
 
+//Enciende el buzzer
 void class_actuators::EncenderBuzzer(void){
   EasyBuzzer.update();
   EasyBuzzer.beep(1000);
 }
+
+//Apaga el buzzer
 void class_actuators::ApagarBuzzer(void){
    EasyBuzzer.update();
    EasyBuzzer.stopBeep();

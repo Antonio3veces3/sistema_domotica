@@ -4,208 +4,230 @@
 *      FECHA:       25 de marzo de 2022.                                     *
 *      VERSIÓN:     1.0.                                                     *
 *                                                                            *
-*      AUTOR:       Mondragón Delgado Mezly Zahory
-*                   Montaño Ruvalcabe Luis Alberto
-*                   Paz Zamora Alfredo
-*                   Ramirez Diaz Radames Oswaldo
-*                   Ramirez Garcia Carlos Antonio
+*      AUTOR:       Mondragón Delgado Mezly Zahory                           *
+*                   Montaño Ruvalcaba Luis Alberto                           *
+*                   Paz Zamora Alfredo                                       *
+*                   Ramírez Díaz Radames Oswaldo                             *
+*                   Ramírez García Carlos Antonio                            *
 *                                                                            *
-*      E-MAIL:      mmondragon@ucol.mx                                        *
+*      E-MAIL:      mmondragon@ucol.mx                                       *
+*                   lmontano@ucol.mx                                         *
+*                   apaz0@ucol.mx                                            *
+*                   rramirez31@ucol.mx                                       *
+*                   cramirez28@ucol.mx                                       *
+*                                                                            *
 *      COMPAÑÍA:    Universidad de Colima - Facultad de Telemática.          *
 *                                                                            *
-*      uC:          ESP832.                                                 *
-*      Nombre:      ESP832.                                                 *
+*      uC:          ESP832.                                                  *
+*      Nombre:      ESP832.                                                  *
 *                                                                            *
 ******************************************************************************
 *                                                                            *
-*      DESCRIPCIÓN DEL PROGRAMA: Arquitectura de software para explorar      *
-*      un poco el uso de métodos y clases para la resolución de problemas.   *  
+*      DESCRIPCIÓN DEL PROGRAMA: Arquitectura de software para implementar   *
+*      un sistema en la dómotica haciendo uso de sensores y actuadores asi   *
+*      como módulos de almacenamiento, visualización de datos y transmición  *
+*      de la información por medio de un broker del servidor mosquitto       *
+*      via MQTT                                                              *  
 *                                                                            *
 ******************************************************************************/
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "Practica2.h"
+
+//Librería para manejo de JSON
 #include <ArduinoJson.h>
-#include <stdio.h>
-#include <iostream>
+
+//Librería para manejo de String
 #include <cstring>
+
+//Librería para módulo Micro-SD
 #include "FS.h"
 #include "SD.h"
 #include "SPI.h"
 
-//Libreria wifi esp32
+//Librería wifi esp32
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-#define SD_CS 5
-#define SD_SCK 18
-#define SD_MOSI 23
-#define SD_MISO 19
 
-const char* ssid = "zaholy";
-const char* password = "pelusatony";
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~CONEXIÓN MQTT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+const char* ssid = "zaholy"; //Nombre de la red WiFi
+const char* password = "pelusatony"; //Password de la red WiFi
 
-const char* mqtt_server = "test.mosquitto.org";
+const char* mqtt_server = "test.mosquitto.org"; //Dirección de Broker mosquitto.
 
+//Crear cliente MQTT con la librería PubSubClient
 WiFiClient espClient;
 PubSubClient client(espClient);
-unsigned long lastMsg = 0;
+
+unsigned long lastMsg = 0; //Almacenar último mensaje recibido
+
+//Crear buffer char para mensajes recibidos
 #define MSG_BUFFER_SIZE (50)
 char msg[MSG_BUFFER_SIZE];
 
-int value = 0;
-
+//Función conexión a red WiFi
 void setup_wifi() {
   delay(10);
-  // Empezamos por conectarnos a una red WiFi
   Serial.println();
-  Serial.print("Conectado a ");
-  Serial.println(ssid);
+  Serial.print("Conectado a "); //Imprime el nombre de la red WiFi
+  Serial.println(ssid);  
 
   WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
+  WiFi.begin(ssid, password); //Iniciar la conexíon a la red WiFi
 
-  while (WiFi.status() != WL_CONNECTED) {
+  while (WiFi.status() != WL_CONNECTED) { //Verificar si la red WiFi esta disponible
     delay(500);
     Serial.print(".");
   }
 
   randomSeed(micros());
   Serial.println("");
-  Serial.println("WiFi conectado");
+  Serial.println("WiFi conectado"); //Imprime la conexión exitosa a la red WiFi
   Serial.println("Dirección IP: ");
-  Serial.println(WiFi.localIP());
+  Serial.println(WiFi.localIP()); //Imprime la dirección IP asignada
 }
 
+//Función para recibir tramas MQTT
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print("Mensaje del tema [");
-  Serial.print(topic);
+  Serial.print(topic); //Imprime el topic de la trama MQTT
   Serial.print("] : ");
   
   String message;
   for (int i = 0; i < length; i++) {
-    message = message + (char) payload[i];
+    message = message + (char) payload[i]; //Concatena el mensaje en un String
   }
-  Serial.print(message);
+  Serial.print(message); //Imprime el mensaje recibido
   Serial.println();
 }
 
+//Función para reconectarse a MQTT
 void reconnect() {
   while (!client.connected()) {
     Serial.print("Intentando la conexión MQTT...");
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
+    String clientId = "ESP32Client-"; //Crea id del cliente MQTT
+    clientId += String(random(0xffff), HEX); //Concatena un numero random hexadecimal
     if (client.connect(clientId.c_str())) {
       Serial.println("conectado");
-      client.subscribe("esp32-RALMT/#");
+      client.subscribe("esp32-RALMT/#"); //Se suscribe y escucha las tramas
     } else {
       Serial.print("fallido, rc =");
-      Serial.print(client.state());
+      Serial.print(client.state()); //Imprime estado del cliente
       Serial.println(" inténtalo de nuevo en 5 segundos");
       delay(5000);
     }
   }
 }
 
-void setup( void ) {
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~SETUP - INICIALIZACIÓN~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-  Serial.begin ( 115200 );
+void setup(void) {
+
+  Serial.begin(115200); //Configuración del BaudRate
+
+  //Inicializar la configuración de los dispositivos
   beginDHT11();
   initLCD();
-  actuadores.initBuzzer();
-  control.initRTC();
-  pinMode(32, OUTPUT); //SENSOR DHT11
-  pinMode(15, INPUT); //SENSOR PIR
-  pinMode(26, OUTPUT); //BUZZER
-  pinMode(25, OUTPUT); //RELAY RSS 
-  digitalWrite(25,LOW); //INICIALIAR RELAY
-
-  setup_wifi();
-  client.setServer(mqtt_server, 1883);
-  client.setCallback(callback);
-
-  SPIClass sd_spi(HSPI);
-    sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS);
+  initBuzzer();
+  initRTC();
   
-    if (!SD.begin(SD_CS, sd_spi))
-        Serial.println("SD Card: mounting failed.");
-    else
-        Serial.println("SD Card: mounted.");
+  pinMode(dht11, OUTPUT); //SENSOR DHT11 modo salida
+  pinMode(pir, INPUT); //SENSOR PIR modo entrada
+  pinMode(buzzer, OUTPUT); //BUZZER modo salida
+  pinMode(relay, OUTPUT); //RELAY RSS  modo salida
+  digitalWrite(relay,LOW); //Inicia el relay encendido
 
-  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n");
+  setup_wifi(); //Conectarse a WiFi
+  client.setServer(mqtt_server, 1883); //Usar el puerto 1883
+  client.setCallback(callback); //Establece la función para recibir mensajes
+
+  SPIClass sd_spi(HSPI); //Crea comunicación SPI
+  sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS); //Inicializar los pines para SPI
+
+  //Condición para verificar la existencia de la SD card
+  if (!SD.begin(SD_CS, sd_spi))
+      Serial.println("SD Card: mounting failed.");
+  else
+      Serial.println("SD Card: mounted.");
+
+  tasks.create_file(SD, "/Data.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
 }
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~FUNCIÓN PRINCIPAL~~~~~~~~~~~~~~~~~~~~~~~~*/
+
 void loop ( void ) {
+  //Se conecta al Broker MQTT Mosquitto
   if (!client.connected()) {
     reconnect();
-  }
-  client.loop();
 
-  String date = tasks.get_date();
-  int movement = tasks.get_movement();
-  int brightness = tasks.get_brightness();
-  int temperature = tasks.get_temperature();
-  int humidity = tasks.get_humidity();
+  //Procesar las tramas MQTT
+  String date =  tasks.get_date();
+  int movement = tasks.get_movement(); //Obtiene el valor del movimiento
+  int brightness = tasks.get_brightness();  //Obtiene el valor de la luminosidad
+  int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
+  int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
 
-  int n = date.length();
-  char dateString[n+1];
-  strcpy(dateString, date.c_str());
+ int n = date.length(); //Longitud de la variable date
+ char dateString[n+1]; //Crea un char buffer char
+ strcpy(dateString, date.c_str()); //Guarda el string en un buffer char
 
-  if(brightness > 340 and  movement == 1){
-      tasks.LED_ON();
+   if(brightness > 340 and  movement  == 1){
+      tasks.LED_ON(); //Funcion que enciende el LED
       Serial.println("ENCENDER LED");
       char accion[500];
-      strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str());
-      client.publish("esp32-RALMT/accion", accion);
+      strcpy(accion, tasks.create_json_action(date, "Foco encendido").c_str()); //Crea un JSON y se guarda en el buffer de accion
+      client.publish("e sp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
       tasks.append_file(SD, "/Data.txt", accion);
-
+ 
       char advertencia[500];
-      strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());
-      client.publish("esp32-RALMT/advertencia", advertencia);
-      tasks.append_file(SD, "/Data.txt", advertencia);
-      }else{
-        if (brightness != -1 or movement != -1)
+      strcpy(advertencia, tasks.create_json_warning(date, "Se detecto movimiento").c_str());//Crea un JSON de advertencia y se guarda en el buffer advertencia
+      client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
+      tasks.append_file(SD, "/Data.txt", advertencia); //Agrega el JSON al archivo Data.txt
+
+       }else{
+         if (brightness != -1 or movement != -1)
         {
-          tasks.LED_OFF();
+          tasks.LED_OFF(); //Funcion que apaga el LED 
           Serial.println("APAGAR LED");
           
           char accion[500];
-          strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str());
-          client.publish("esp32-RALMT/accion", accion);
-          tasks.append_file(SD, "/Data.txt", accion);
-        }
-      }
-  if (temperature!= 0 and humidity !=0)
+          strcpy(accion, tasks.create_json_action(date, "Foco apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
+          client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
+          tasks.append_file(SD, "/Data.txt", accion); //Agrega el JSON al archivo Data.txt 
+         }
+       }
+    if (temperature!= 0 and humidity !=0)
   {
-    tasks.printTempHumDate(temperature, humidity, date);
+    tasks.printTempHumDate(temperature, humidity, date); //Imprime los dato en el LCD
     Serial.println("DATOS RECOPILADOS");
 
     char clima[500];
-    strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str());
-    client.publish("esp32-RALMT/clima", clima);
-    tasks.append_file(SD, "/Data.txt", clima);
-  }
+    strcpy(clima, tasks.create_json_temp_hum(date, temperature, humidity).c_str()); //Crea un JSON de clima  y se guarda en el buffer clima
+    client.publish("esp32-RALMT/clima", clima); //Publica un JSON en el topic /clima 
+    tasks.append_file(SD, "/Data.txt", clima); //Agrega el JSON al archivo Data.txt
+   }
   
   if(temperature >= 40)
   {
-    tasks.Buzzer_ON();
+    tasks.Buzzer_ON(); //Enciende el buzzer
     char accion[500];
-    strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str());
-    client.publish("esp32-RALMT/accion", accion);
-    tasks.append_file(SD, "/Data.txt", accion);
-
+    strcpy(accion, tasks.create_json_action(date,"Buzzer encendido").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
+    client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
+    tasks.append_file(SD, "/Data.txt", accion);   //Agrega el JSON al archivo Data.txt 
+ 
     char advertencia[500];
-    strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str());
-    client.publish("esp32-RALMT/advertencia", advertencia);
-    tasks.append_file(SD, "/Data.txt", advertencia);
-
-  }else{
-    tasks.Buzzer_OFF();
+    strcpy(advertencia, tasks.create_json_warning(date, "Temperatura muy alta").c_str()); //Crea un JSON de advertencia y se guarda en el buffer advertencia
+    client.publish("esp32-RALMT/advertencia", advertencia); //Publica un JSON en el topic /advertencia
+    tasks.append_file(SD, "/Data.txt", advertencia); //Agrega el JSON al archivo Data.txt 
+ 
+   }else{
+    tasks.Buzzer_OFF(); //Apaga el buzzer
     
     char accion[500];
-    strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str());
-    client.publish("esp32-RALMT/accion", accion);
-    tasks.append_file(SD, "/Data.txt", accion);
-  }  
-delay(1000);
+    strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
+    client.publish("e //Apaga el buzzersp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
+    tasks.append_file(SD, "/Data.txt", accion);  //Agrega el JSON al archivo Data.  txt
+    }  
+  delay(1000);
 }
