@@ -14,6 +14,7 @@
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_data_controller {
+  
     public:   //Métodos Públicos            
        String getDataTime(void); 
        void imprimirLCD(int temp, int hum, String date); 
@@ -63,22 +64,6 @@ void initRTC(void){
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-//Muestra los datos obtenidos en la LCD
-void class_data_controller::imprimirLCD(int temp, int hum, String date){  
-    lcd.clear();
-    lcd.createChar(0, customGrade); //Crea el icono personalizado
-    lcd.setCursor(0,0); //Coloca el cursor en la posición dada
-    lcd.print(date); //Imprime la fecha y hora
-    lcd.setCursor(0,1); 
-    lcd.print(String(temp)); //Imprime la temperatura
-    lcd.setCursor(2,1); 
-    lcd.write(0); //Escribe un espacio
-    lcd.setCursor(3,1);  
-    lcd.print("C");  //Imprime la letra "C"
-    lcd.setCursor(5,1); 
-    lcd.print("Hum:" + String(hum)+"%");  //Imprime la humedad
-}
-
 //Obtiene la hora y fecha
 String class_data_controller::getDataTime(void){ 
     DateTime now = rtc.now(); //Variable que almacena los valores del RTC
@@ -96,6 +81,22 @@ String class_data_controller::getDataTime(void){
     //Variable que muestra el formato de la fecha y hora
     String date = String(d) + "/" + String(mon) + "/" + String(y) + " " + String(h) + ":" + String(m);
     return date; //Retornamos la variable date
+}
+
+//Muestra los datos obtenidos en la LCD
+void class_data_controller::imprimirLCD(int temp, int hum, String date){  
+    lcd.clear();
+    lcd.createChar(0, customGrade); //Crea el icono personalizado
+    lcd.setCursor(0,0); //Coloca el cursor en la posición dada
+    lcd.print(date); //Imprime la fecha y hora
+    lcd.setCursor(0,1); 
+    lcd.print(String(temp)); //Imprime la temperatura
+    lcd.setCursor(2,1); 
+    lcd.write(0); //Escribe un espacio
+    lcd.setCursor(3,1);  
+    lcd.print("C");  //Imprime la letra "C"
+    lcd.setCursor(5,1); 
+    lcd.print("Hum:" + String(hum)+"%");  //Imprime la humedad
 }
 
 //Crea un archivo en la micro-SD
