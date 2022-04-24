@@ -209,8 +209,6 @@ void loop ( void ) {
     if (temperature!= 0 or humidity !=0)
   {
     tasks.printTempHumDate(temperature, humidity, date); //Imprime los datos en el LCD
-    Serial.println("TEMP: " + String(temperature));
-    Serial.println("HUM: " + String(humidity));
     Serial.println("DATOS RECOPILADOS");
 
     char clima[500];
