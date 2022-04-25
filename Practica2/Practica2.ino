@@ -235,7 +235,7 @@ void loop ( void ) {
     
     char accion[500];
     strcpy(accion, tasks.create_json_action(date,"Buzzer apagado").c_str()); //Crea un JSON de accion y se guarda en el buffer accion
-    client.publish("e //Apaga el buzzersp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
+    client.publish("esp32-RALMT/accion", accion); //Publica un JSON en el topic /accion
     tasks.append_file(SD, "/Acciones.txt", accion);  //Agrega el JSON al archivo Acciones.txt
   }  
   delay(1000);
