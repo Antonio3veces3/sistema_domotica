@@ -1,11 +1,4 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-//Librerías para sensor DHT11
-#include <DHT.h>
-#include <DHT_U.h>
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
 class class_sensors {
 
   public: //Variables Públicas
@@ -14,22 +7,19 @@ class class_sensors {
     int valorPIR = 0;
 
  public:  //Métodos Públicos
+    void initDHT11(void);
     int obtener_temperatura(void);  
     int obtener_humedad(void);      
     int obtener_luminosidad(void);   
     int obtener_movimiento(void);  
 };
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-DHT dht( 32, DHT11 ); //Crea instancia DHT11
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Inicilizar el sensor DHT11
-void beginDHT11 ( void ){
+void class_sensors::initDHT11 ( void ){
   dht.begin();
 }
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Método para obtener la temperatura del sensor DHT11
 int class_sensors::obtener_temperatura ( void ){
@@ -45,12 +35,12 @@ int class_sensors::obtener_humedad ( void ){
 
 //Método para obtener la luminisidad
 int class_sensors::obtener_luminosidad ( void ){
-  valorLDR = analogRead(39); 
+  valorLDR = analogRead(LDR_PIN); 
   return valorLDR; //Retorna la luminosidad
 }
 
 //Método para obtener el movimiento
 int class_sensors::obtener_movimiento ( void ){
-  valorPIR = digitalRead(15); 
+  valorPIR = digitalRead(PIR_PIN); 
   return valorPIR; //Retorna el movimiento
 } 

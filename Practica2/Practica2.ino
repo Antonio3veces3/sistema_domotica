@@ -34,16 +34,8 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "Practica2.h"
 
-//Librería para manejo de JSON
-#include <ArduinoJson.h>
-
 //Librería para manejo de String
 #include <cstring>
-
-//Librería para módulo Micro-SD
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
 
 //Librería wifi esp32
 #include <WiFi.h>
@@ -65,11 +57,6 @@ unsigned long lastMsg = 0; //Almacenar último mensaje recibido
 //Crear buffer char para mensajes recibidos
 #define MSG_BUFFER_SIZE (50)
 char msg[MSG_BUFFER_SIZE];
-
-#define SD_CS 5    //GPIO pin SD_CS
-#define SD_SCK 18  //GPIO pin SD_SCK
-#define SD_MOSI 23 //GPIO pin SD_MOSI
-#define SD_MISO 19 //GPIO pin SD_MISO
 
 //Función conexión a red WiFi
 void setup_wifi() {
@@ -132,11 +119,12 @@ void setup(void) {
   Serial.begin(115200); //Configuración del BaudRate
 
   //Inicializar la configuración de los dispositivos
-  beginDHT11();
-  initLCD();
-  initBuzzer();
-  initRTC();
-  
+  RTC.initRTC();
+  microSD.initMicroSD();
+  sensor.initDHT11();
+  lcd.
+  actuator.initBuzzer();
+
   pinMode(32, OUTPUT); //SENSOR DHT11 modo salida
   pinMode(15, INPUT); //SENSOR PIR modo entrada
   pinMode(26, OUTPUT); //BUZZER modo salida
@@ -146,15 +134,6 @@ void setup(void) {
   setup_wifi(); //Conectarse a WiFi
   client.setServer(mqtt_server, 1883); //Usar el puerto 1883
   client.setCallback(callback); //Establece la función para recibir mensajes
-
-  SPIClass sd_spi(HSPI); //Crea comunicación SPI
-  sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS); //Inicializar los pines para SPI
-
-  //Condición para verificar la existencia de la SD card
-  if (!SD.begin(SD_CS, sd_spi))
-      Serial.println("SD Card: mounting failed.");
-  else
-      Serial.println("SD Card: mounted.");
 
   tasks.create_file(SD, "/Clima.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
   tasks.create_file(SD, "/Acciones.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto

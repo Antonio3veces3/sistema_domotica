@@ -1,35 +1,28 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-
-//Librerías para manejo del Buzzer
-#include <Config.h>
-#include <EasyBuzzer.h> 
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
- public:   //Métodos Públicos             
+ public:   //Métodos Públicos  
+    void initBuzzer(void);           
     void EncenderLED(void); 
     void ApagarLED(void);  
     void EncenderBuzzer(void);
     void ApagarBuzzer(void);
 };
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Inicializa el buzzer
-void initBuzzer(void){
-  EasyBuzzer.setPin(26); 
+void class_actuators::initBuzzer(void){
+  EasyBuzzer.setPin(BUZZER_PIN); 
 }
-
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Enciende el LED
 void class_actuators::EncenderLED(void){
-    digitalWrite(25,LOW); //PIN RELAY
+    digitalWrite(RELAY_PIN,LOW); //PIN RELAY
 }
 
 //Apaga el LED
 void class_actuators::ApagarLED(void){
-    digitalWrite(25,HIGH);  //PIN RELAY
+    digitalWrite(RELAY_PIN,HIGH);  //PIN RELAY
 }
 
 //Enciende el buzzer
