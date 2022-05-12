@@ -10,6 +10,8 @@ class class_tasks{
     unsigned long intervaloLdr = 1000;  //Intervalo de tiempo sensor LDR
     unsigned long timeMov = 0;
     unsigned long intervaloMov = 1000;  //Intervalo de tiempo sensor PIR
+    unsigned long intervaloMQTT = 5000, timeMQTT = 0;
+    
 
   public: //Métodos Públicos
     int get_temperature(void);
@@ -27,6 +29,7 @@ class class_tasks{
     String create_json_temp_hum(String date, int temp, int hum);
     String create_json_action(String date, String action);
     String create_json_warning(String date, String warning);
+    void taskMQTT ( void );
 };
 
 
@@ -114,6 +117,17 @@ void class_tasks::printTempHumDate(int temp, int hum, String date){
 //Obtiene los valores de la fecha y hora
 String class_tasks::get_date(void){
   return RTC.getDataTime();
+}
+
+void class_tasks::taskMQTT( void ){
+
+  if((millis() - timeMQTT) >= intervaloMQTT){ //Intervalo de 1 segundo
+    mqtt.reconnect_MQTT ( );
+    mqtt.publish_MQTT ( );
+    timeMQTT = millis();  //Guarda el tiempo actual   
+  }else{ 
+    return -1;
+  }
 }
 
 /*//Crea el JSON con la fecha, hora, temperatura y humedad
