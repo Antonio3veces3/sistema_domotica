@@ -10,6 +10,8 @@ class class_tasks{
     unsigned long intervaloLdr = 1000;  //Intervalo de tiempo sensor LDR
     unsigned long timeMov = 0;
     unsigned long intervaloMov = 1000;  //Intervalo de tiempo sensor PIR
+    unsigned long intervaloMQTT = 5000, timeMQTT = 0;
+    
 
   public: //Métodos Públicos
     int get_temperature(void);
@@ -27,6 +29,7 @@ class class_tasks{
     String create_json_temp_hum(String date, int temp, int hum);
     String create_json_action(String date, String action);
     String create_json_warning(String date, String warning);
+    void taskMQTT ( void );
 };
 
 
@@ -85,48 +88,49 @@ int class_tasks::get_movement(void){
 
 //Enciende el LED
 void class_tasks::LED_ON(void){
-  actuadores.EncenderLED();
+  actuator.EncenderLED();
 }
 
 //Apaga el LED
 void class_tasks::LED_OFF(void){
-  actuadores.ApagarLED();
+  actuator.ApagarLED();
 }
 
 //Enciende el buzzer
 void class_tasks::Buzzer_ON(void){
   for(int i =1;i<=5;i++)
   {
-    actuadores.EncenderBuzzer();
+    actuator.EncenderBuzzer();
   }
 }
 
 //Apaga el buzzer
 void class_tasks::Buzzer_OFF(void){
-  actuadores.ApagarBuzzer();
+  actuator.ApagarBuzzer();
 }
 
 //Imprime valores obtenidos en la LCD
 void class_tasks::printTempHumDate(int temp, int hum, String date){
-  control.imprimirLCD(temp, hum, date);
+  lcd.printLCD(temp, hum, date);
 }
 
 //Obtiene los valores de la fecha y hora
 String class_tasks::get_date(void){
-  return control.getDataTime();
+  return RTC.getDataTime();
 }
 
-//Crea un archivo en la micro-SD
-void class_tasks::create_file(fs::FS &fs, const char * path, const char * message){
-  control.createFile(fs, path, message);
+void class_tasks::taskMQTT( void ){
+
+  if((millis() - timeMQTT) >= intervaloMQTT){ //Intervalo de 1 segundo
+    mqtt.reconnect_MQTT ( );
+    mqtt.publish_MQTT ( );
+    timeMQTT = millis();  //Guarda el tiempo actual   
+  }else{ 
+    return -1;
+  }
 }
 
-//Agrega los valores obtenidos en el archivo guardado en la micro-SD
-void class_tasks::append_file(fs::FS &fs, const char * path, const char * message){
-  control.appendFile(fs, path, message);
-}
-
-//Crea el JSON con la fecha, hora, temperatura y humedad
+/*//Crea el JSON con la fecha, hora, temperatura y humedad
 String class_tasks::create_json_temp_hum(String date, int temp, int hum){
   return control.crear_json_temp_hum(date, temp, hum);
 }
@@ -139,4 +143,4 @@ String class_tasks::create_json_action(String date, String action){
 //Crea el JSON con la fecha, hora y advertencias emitidas
 String class_tasks::create_json_warning(String date, String warning){
   return control.crear_json_warning( date, warning);
-}
+}*/

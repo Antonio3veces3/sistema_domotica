@@ -34,96 +34,16 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERÍAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 #include "Practica2.h"
 
-//Librería para manejo de JSON
-#include <ArduinoJson.h>
-
 //Librería para manejo de String
 #include <cstring>
 
-//Librería para módulo Micro-SD
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
-
-//Librería wifi esp32
-#include <WiFi.h>
-#include <PubSubClient.h>
-
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~CONEXIÓN MQTT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
-const char* ssid = "zaholy"; //Nombre de la red WiFi
-const char* password = "pelusatony"; //Password de la red WiFi
-
-const char* mqtt_server = "test.mosquitto.org"; //Dirección de Broker mosquitto.
-
-//Crear cliente MQTT con la librería PubSubClient
-WiFiClient espClient;
-PubSubClient client(espClient);
-
 unsigned long lastMsg = 0; //Almacenar último mensaje recibido
 
 //Crear buffer char para mensajes recibidos
 #define MSG_BUFFER_SIZE (50)
 char msg[MSG_BUFFER_SIZE];
-
-#define SD_CS 5    //GPIO pin SD_CS
-#define SD_SCK 18  //GPIO pin SD_SCK
-#define SD_MOSI 23 //GPIO pin SD_MOSI
-#define SD_MISO 19 //GPIO pin SD_MISO
-
-//Función conexión a red WiFi
-void setup_wifi() {
-  delay(10);
-  Serial.println();
-  Serial.print("Conectado a "); //Imprime el nombre de la red WiFi
-  Serial.println(ssid);  
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password); //Iniciar la conexíon a la red WiFi
-
-  while (WiFi.status() != WL_CONNECTED) { //Verificar si la red WiFi esta disponible
-    delay(500);
-    Serial.print(".");
-  }
-
-  randomSeed(micros());
-  Serial.println("");
-  Serial.println("WiFi conectado"); //Imprime la conexión exitosa a la red WiFi
-  Serial.println("Dirección IP: ");
-  Serial.println(WiFi.localIP()); //Imprime la dirección IP asignada
-}
-
-//Función para recibir tramas MQTT
-void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Mensaje del tema [");
-  Serial.print(topic); //Imprime el topic de la trama MQTT
-  Serial.print("] : ");
-  
-  String message;
-  for (int i = 0; i < length; i++) {
-    message = message + (char) payload[i]; //Concatena el mensaje en un String
-  }
-  Serial.print(message); //Imprime el mensaje recibido
-  Serial.println();
-}
-
-//Función para reconectarse a MQTT
-void reconnect() {
-  while (!client.connected()) {
-    Serial.print("Intentando la conexión MQTT...");
-    String clientId = "ESP32Client-"; //Crea id del cliente MQTT
-    clientId += String(random(0xffff), HEX); //Concatena un numero random hexadecimal
-    if (client.connect(clientId.c_str())) {
-      Serial.println("conectado");
-      client.subscribe("esp32-RALMT/#"); //Se suscribe y escucha las tramas
-    } else {
-      Serial.print("fallido, rc =");
-      Serial.print(client.state()); //Imprime estado del cliente
-      Serial.println(" inténtalo de nuevo en 5 segundos");
-      delay(5000);
-    }
-  }
-}
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~SETUP - INICIALIZACIÓN~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -132,29 +52,20 @@ void setup(void) {
   Serial.begin(115200); //Configuración del BaudRate
 
   //Inicializar la configuración de los dispositivos
-  beginDHT11();
-  initLCD();
-  initBuzzer();
-  initRTC();
-  
+  RTC.initRTC();
+  microSD.initMicroSD();
+  sensor.initDHT11();
+  lcd.
+  actuator.initBuzzer();
+  mqtt.setup_WiFi ( );
+  mqtt.set_MQTT_server ( );
+
   pinMode(32, OUTPUT); //SENSOR DHT11 modo salida
   pinMode(15, INPUT); //SENSOR PIR modo entrada
   pinMode(26, OUTPUT); //BUZZER modo salida
   pinMode(25, OUTPUT); //RELAY RSS  modo salida
   digitalWrite(25,LOW); //Inicia el relay encendido
 
-  setup_wifi(); //Conectarse a WiFi
-  client.setServer(mqtt_server, 1883); //Usar el puerto 1883
-  client.setCallback(callback); //Establece la función para recibir mensajes
-
-  SPIClass sd_spi(HSPI); //Crea comunicación SPI
-  sd_spi.begin(SD_SCK, SD_MISO, SD_MOSI, SD_CS); //Inicializar los pines para SPI
-
-  //Condición para verificar la existencia de la SD card
-  if (!SD.begin(SD_CS, sd_spi))
-      Serial.println("SD Card: mounting failed.");
-  else
-      Serial.println("SD Card: mounted.");
 
   tasks.create_file(SD, "/Clima.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
   tasks.create_file(SD, "/Acciones.txt", "Datos obtenidos\n"); //Crea un archivo y agrega una línea de texto
@@ -164,12 +75,6 @@ void setup(void) {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~FUNCIÓN PRINCIPAL~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 void loop ( void ) {
-  //Se conecta al Broker MQTT Mosquitto
-  if (!client.connected()) {
-    reconnect();
-  }
-
-  client.loop(); //Procesar las tramas MQTT
     
   String date =  tasks.get_date();
   int movement = tasks.get_movement(); //Obtiene el valor del movimiento
