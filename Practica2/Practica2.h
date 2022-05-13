@@ -35,13 +35,6 @@
 
 #define EXTENSION ".json"
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~VARIABLES PARA MQTT~~~~~~~~~~~~~~~~~~~~~~~~*/
-const char* HOTSPOT_WIFI = "tony";
-const char* HOTSPOT_PWD = "tonyholamundo";  
-const char* MQTT_SERVER = "test.mosquitto.org";
-#define MQTT_PORT 1883
-#define TOPIC "esp32-RALMT/data"
-
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~CONFIGURACION~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 RTC_DS1307 rtc;
