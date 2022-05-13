@@ -15,16 +15,16 @@ class class_rtc {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Inicializar el RTC
-void initRTC(void){ 
+void class_rtc::initRTC(void){ 
     if (! rtc.begin()) { //Si no lo encuentra muestra un mensaje de error
         Serial.println("No se pudo encontrar el módulo RTC");
         Serial.flush();
-        while (1) delay(10);
+        //while (1) delay(10);
     }
 
-    if (! rtc.isrunning()) { //Si no se inicializa muestra un mensaje de error
+    //if (! rtc.isrunning()) { //Si no se inicializa muestra un mensaje de error
         Serial.println("Sucedió un error inesperado. El módulo RTC no esta corriendo, hay que ajustar la fecha.");
-    }
+    //}
 }
 
 
