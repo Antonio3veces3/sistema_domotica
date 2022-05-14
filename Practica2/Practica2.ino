@@ -69,7 +69,7 @@ void loop ( void ) {
   if(brightness > 340 and  movement  == 1){
       tasks.LED_ON(); //Funcion que enciende el LED
       Serial.println("ENCENDER LED");
-      tasks.save_file("Foco encendido", "Se detectó movimiento");
+      tasks.save_file("Foco encendido", "Se detecto movimiento");
       tasks.publish_MQTT();
     }
     else{
@@ -77,7 +77,7 @@ void loop ( void ) {
       {
         tasks.LED_OFF(); //Funcion que apaga el LED 
         Serial.println("APAGAR LED");
-        tasks.save_file("Foco apagado", "No se detectó movimiento");
+        tasks.save_file("Foco apagado", "No se detecto movimiento");
         tasks.publish_MQTT();
       }
     }
@@ -89,13 +89,13 @@ void loop ( void ) {
   {
     tasks.Buzzer_ON(); //Enciende el buzzer
     Serial.println("ENCIENDE BUZZER");
-    tasks.save_file("Buzzer encendido", "No se detectó movimiento");
+    tasks.save_file("Buzzer encendido", "No se detecto movimiento");
     tasks.publish_MQTT();
   }
   else{
     tasks.Buzzer_OFF(); //Apaga el buzzer
     Serial.println("APAGA BUZZER");
-    tasks.save_file("Buzzer apagado", "No se detectó movimiento");
+    tasks.save_file("Buzzer apagado", "No se detecto movimiento");
     tasks.publish_MQTT();
   }  
   delay(1000);
