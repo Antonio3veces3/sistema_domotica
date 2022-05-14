@@ -1,13 +1,13 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_rtc {
     public:
-        String date = "", time = "";
-        uint8_t hour, minute, second, day, month;
-        uint16_t year;
+        String fecha = "", hora = "";
+        uint8_t horas, minuto, segundo, dia, mes;
+        uint16_t ano;
   
     public:   //Métodos Públicos 
         void initRTC(void);           
-        String getDataTime(void);
+        void getDataTime(void);
         void formatDate(void);
         void formatTime(void); 
 };
@@ -15,7 +15,7 @@ class class_rtc {
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 //Inicializar el RTC
-void initRTC(void){ 
+void class_rtc::initRTC(void){ 
     if (! rtc.begin()) { //Si no lo encuentra muestra un mensaje de error
         Serial.println("No se pudo encontrar el módulo RTC");
         Serial.flush();
@@ -27,44 +27,43 @@ void initRTC(void){
     }
 }
 
-
 //Obtiene la hora y fecha
-String class_rtc::getDataTime(void){ 
+void class_rtc::getDataTime(void){ 
     DateTime now = rtc.now(); //Variable que almacena los valores del RTC
 
     //Variables que almacenan los años, meses y días
-    year = now.year();
-    month = now.month(); 
-    day = now.day();
+    ano = now.year();
+    mes = now.month(); 
+    dia = now.day();
 
     //Variables que almacenan las horas, minutos y segundos
-    hour = now.hour();
-    minute = now.minute();
-    second = now.second();
+    horas = now.hour();
+    minuto = now.minute();
+    segundo = now.second();
 }
 
 void class_rtc::formatDate(void){
 
-    date = "";
-    if (day < 10) date += '0';
-    date += day;
-    date += '/';
-    if (month < 10) date += '0';
-    date += month;
-    date += '/';
-    date += year;
+    fecha = "";
+    if (dia < 10) fecha += '0';
+    fecha += dia;
+    fecha += '/';
+    if (mes < 10) fecha += '0';
+    fecha += mes;
+    fecha += '/';
+    fecha += ano;
 
 }
 
 void class_rtc::formatTime(void){
 
-    time = "";
-    if (hora < 10) time += '0';
-    time += hora;
-    time += ':';
-    if (minute < 10) time += '0';
-    time += minute;
-    time += ':';
-    if (second < 10) time += '0';
-    time += second;
+    hora = "";
+    if (horas < 10) hora += '0';
+    hora += horas;
+    hora += ':';
+    if (minuto < 10) hora += '0';
+    hora += minuto;
+    hora += ':';
+    if (segundo < 10) hora += '0';
+    hora += segundo;
 }
