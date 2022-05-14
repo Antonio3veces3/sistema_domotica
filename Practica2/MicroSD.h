@@ -6,8 +6,8 @@ class class_microSD {
     public:
         void initMicroSD( void );
         void fileID( void );
-        String create_json(String, String);
-        void JSON_SaveFile(String);          
+        void create_json(String, String);
+        void JSON_SaveFile(DynamicJsonDocument *);          
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -32,9 +32,8 @@ void class_microSD::fileID( void ){
   filename += EXTENSION;
 }
 
-String class_microSD::create_json( String accion, String advertencia ){
+void class_microSD::create_json( String accion, String advertencia ){
 
-  JSON_STRING = " ";
   RTC.getDataTime();
   RTC.formatTime();
   RTC.formatDate();
@@ -45,18 +44,19 @@ String class_microSD::create_json( String accion, String advertencia ){
   doc ["clima"]["humedad"] = sensor.humedad;
   doc ["notificacion"]["accion"] = accion;
   doc ["notificacion"]["advertencia"] = advertencia;
-  serializeJson(doc, JSON_STRING);
-  JSON_SaveFile(JSON_STRING);
+  JSON_SaveFile(&doc);
 
 }
 
-void class_microSD::JSON_SaveFile( String JSON_STRING ){
+void class_microSD::JSON_SaveFile( DynamicJsonDocument *doc ){
 
+  JSON_STRING = " ";
   fileID();
   microSD_file = SD.open(filename, FILE_APPEND);
   if ( microSD_file ){
+    serializeJson(*doc, JSON_STRING);
     microSD_file.print(JSON_STRING);
-    microSD_file.println( ', \n' );
+    microSD_file.print( '\n' );
     microSD_file.close();
   }
   else
