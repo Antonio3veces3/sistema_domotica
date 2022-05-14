@@ -33,13 +33,16 @@ void class_MQTT::publish_MQTT( void ){
 //Función para reconectarse a MQTT
 void class_MQTT::reconnect_MQTT( void ){
 
-  if (!client.connected()){
+  if ( !client.connected() ){
 
-    while (!client.connected()){
+    while (!client.connected () ){
+      
       Serial.print("Intentando la conexión MQTT...");
+      
       String clientId = "ESP32Client-"; //Crea id del cliente MQTT
       clientId += String(random(0xffff), HEX); //Concatena un numero random hexadecimal
-      if (client.connect(clientId.c_str())) {
+      
+      if ( client.connect( clientId.c_str() ) ) {
         Serial.println("CONECTADO :D");
       } else {
         Serial.print("CONEXIÓN FALLIDA, rc =");
@@ -48,7 +51,6 @@ void class_MQTT::reconnect_MQTT( void ){
         delay(5000);
       }
     }
-  }
   client.loop();
   
 }
