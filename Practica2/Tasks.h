@@ -2,8 +2,8 @@
 class class_tasks{
 
   public: //Variables Públicas
-    unsigned long intervaloMQTT = 5000, timeMQTT = 0;
-    unsigned long intervaloDL = 5000, timeDL = 0;
+    unsigned long intervaloMQTT = 15000, timeMQTT = 0;
+    unsigned long intervaloDL = 15000, timeDL = 0;
     unsigned long intervaloTemp = 5000, timeTemp = 0;  //Intervalo de tiempo temperatura
     unsigned long intervaloHum = 5000, timeHum = 0;   //Intervalo de tiempo humedad
     unsigned long intervaloLdr = 1000, timeLdr = 0;   //Intervalo de tiempo sensor LDR
