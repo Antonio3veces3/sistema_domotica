@@ -51,11 +51,11 @@ void class_MQTT::reconnect_MQTT( void ){
         delay(5000);
       }
     }
+  }
   client.loop();
-  
 }
 
-void class_MQTT::setup_WiFi ( void ){
+void class_MQTT::setup_WiFi( void ){
 
   delay(10);
   Serial.println("CONFIGURANDO WiFi:");
