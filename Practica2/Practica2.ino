@@ -1,7 +1,7 @@
 /*****************************************************************************
 *                                                                            *
 *      NOMBRE:      Práctica 2.1.                                            *
-*      FECHA:       25 de marzo de 2022.                                     *
+*      FECHA:       16 de mayo de 2022.                                     *
 *      VERSIÓN:     1.0.                                                     *
 *                                                                            *
 *      AUTOR:       Mondragón Delgado Mezly Zahory                           *
@@ -25,7 +25,7 @@
 *                                                                            *
 *      DESCRIPCIÓN DEL PROGRAMA: Arquitectura de software para implementar   *
 *      un sistema en la dómotica haciendo uso de sensores y actuadores asi   *
-*      como módulos de almacenamiento, visualización de datos y transmición  *
+*      como módulos de almacenamiento, visualización de datos y transmisión  *
 *      de la información por medio de un broker del servidor mosquitto       *
 *      via MQTT                                                              *  
 *                                                                            *
@@ -46,13 +46,9 @@ void setup(void) {
   pinMode(RELAY_PIN, OUTPUT); //RELAY RSS  modo salida
   digitalWrite(RELAY_PIN,LOW); //Inicia el relay encendido
 
-  //Inicializar la configuración de los dispositivos
-  RTC.initRTC();
-  MSD.initMicroSD();
+  //Inicializar la configuración de los dispositivos 
   tasks.init_devices();
-  mqtt.setup_WiFi ( );
-  mqtt.set_MQTT_server ( );
-  
+
 }
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~FUNCIÓN PRINCIPAL~~~~~~~~~~~~~~~~~~~~~~~~*/
