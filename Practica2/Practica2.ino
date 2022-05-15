@@ -53,7 +53,7 @@ void setup(void) {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~FUNCIÓN PRINCIPAL~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-void loop ( void ) {
+void loop(void){
 
   RTC.getDataTime();
     
