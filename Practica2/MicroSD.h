@@ -6,8 +6,8 @@ class class_microSD {
     public:
         void initMicroSD( void );
         void fileID( void );
-        String create_json(String accion, String advertencia);
-        void JSON_SaveFile(String JSON_STRING);          
+        void create_json(String, String);
+        void JSON_SaveFile(DynamicJsonDocument *);          
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
@@ -18,47 +18,47 @@ void class_microSD::initMicroSD( void ){
     Serial.println( F ( "Error :( No se reconoció la MicroSD"));
     delay(1000);
   }
-  Serial.println( F ( "¡La MicroSD se inicio exitosamente!"));
+  Serial.println( F ( "¡La MicroSD se inicio exitosamente! :D"));
 }
 
 void class_microSD::fileID( void ){
 
   filename = '/';
-  if (RTC.day < 10) filename += '0';
+  if (RTC.dia < 10) filename += '0';
   filename += RTC.dia;
-  if (RTC.month < 10) filename += '0';
-  filename += RTC.month;
-  filename += RTC.year;
+  if (RTC.mes < 10) filename += '0';
+  filename += RTC.mes;
+  filename += RTC.ano;
   filename += EXTENSION;
 }
 
 void class_microSD::create_json( String accion, String advertencia ){
 
-  JSON_STRING = " ";
-  RTC.get_time ();
-  RTC.format_time();
-  RTC.format_date();
-  DynamicJsonDocument doc ( 1024 );
+  RTC.getDataTime();
+  RTC.formatTime();
+  RTC.formatDate();
+  DynamicJsonDocument doc(1024);
   doc ["tiempo"]["fecha"] = RTC.fecha;
-  doc ["tiempo"]["hora"] = RTC.tiempo;
-  doc ["clima"]["temperatura"] = sensor.obtener_temperatura; 
-  doc ["clima"]["humedad"] = sensor.obtener_temperatura;
+  doc ["tiempo"]["hora"] = RTC.hora;
+  doc ["clima"]["temperatura"] = sensor.temperatura; 
+  doc ["clima"]["humedad"] = sensor.humedad;
   doc ["notificacion"]["accion"] = accion;
   doc ["notificacion"]["advertencia"] = advertencia;
-  serializeJson(*doc, JSON_STRING);
-  JSON_SaveFile(JSON_STRING);
+  JSON_SaveFile(&doc);
 
 }
 
-void class_microSD::JSON_SaveFile( String JSON_STRING ){
+void class_microSD::JSON_SaveFile( DynamicJsonDocument *doc ){
 
-  FileID();
-  MicroSD_File = SD.open(filename, FILE_APPEND);
-  if ( MicroSD_File ){
-    MicroSD_File.print(JSON_STRING);
-    MicroSD_File.println( ',' );
-    MicroSD_File.close();
+  JSON_STRING = " ";
+  fileID();
+  microSD_file = SD.open(filename, FILE_APPEND);
+  if ( microSD_file ){
+    serializeJson(*doc, JSON_STRING);
+    microSD_file.print(JSON_STRING);
+    microSD_file.println( ',' );
+    microSD_file.close();
   }
   else
-    Serial.print( F ("Error fatal"));
+    Serial.print( F ("Error fatal. No se pudo guardar la información :("));
 }
