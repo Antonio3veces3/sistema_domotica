@@ -29,9 +29,13 @@ class class_tasks{
 
 void class_tasks::init_devices( void ){
 
+  RTC.initRTC();
+  MSD.initMicroSD();
   LCD.initLCD();
   actuator.initBuzzer();
   sensor.initDHT11();
+  mqtt.setup_WiFi ( );
+  mqtt.set_MQTT_server ( );
   
 }
 
