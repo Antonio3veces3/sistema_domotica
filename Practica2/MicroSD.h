@@ -56,7 +56,7 @@ void class_microSD::JSON_SaveFile( DynamicJsonDocument *doc ){
   if ( microSD_file ){
     serializeJson(*doc, JSON_STRING);
     microSD_file.print(JSON_STRING);
-    microSD_file.print( '\n' );
+    microSD_file.println( ',' );
     microSD_file.close();
   }
   else
