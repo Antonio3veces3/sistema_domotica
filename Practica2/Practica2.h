@@ -2,7 +2,6 @@
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE LIBRERIAS~~~~~~~~~~~~~~~~~~~~~~~~*/
 
-//Librerias para MQTT
 #include <WiFi.h>
   WiFiClient ESP32_WIFI;
   
@@ -16,30 +15,30 @@
 #define BUZZER_PIN 26
 #define RELAY_PIN 25
 #define LDR_PIN 39
+#define DHT11_PIN 32
+#define MICROSD_PIN 5
+#define EXTENSION ".json"
 
 #include <Config.h>
 #include <EasyBuzzer.h> 
 
 #include <DHT.h>
 #include <DHT_U.h>
-#define DHT11_PIN 32
   DHT dht(DHT11_PIN, DHT11);
 
 #include <Wire.h>
 #include <ArduinoJson.h>
-#define MICROSD_PIN 5
-#define EXTENSION ".json"
-
 #include <SPI.h>
 #include <SD.h>
 #include "RTClib.h"
  RTC_DS1307 rtc;
+ 
 File microSD_file;
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE CLASES~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #include "RTC.h"
- class_rtc RTC;
+ class_rtc RTC;                 //Importa la clase RTC
 
 #include "Sensors.h";
  class_sensors sensor;          //Importa la clase de sensores
