@@ -1,14 +1,16 @@
 
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~VARIABLES PARA MQTT~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~VARIABLES PARA MQTT~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 const char* HOTSPOT_WIFI = "zaholy";
 const char* HOTSPOT_PWD = "pelusatony";  
 const char* MQTT_SERVER = "test.mosquitto.org";
 #define MQTT_PORT 1883
 #define TOPIC "esp32-RALMT/data"
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_MQTT {
-
   public:
+
+  public: //Métodos públicos
     void subscribe_MQTT( void );
     void publish_MQTT( void );
     void reconnect_MQTT( void );
@@ -16,13 +18,16 @@ class class_MQTT {
     void set_MQTT_server( void );
 };
 
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+
+//Inicializar el servidor 
 void class_MQTT::set_MQTT_server( void ){
 
   client.setServer(MQTT_SERVER, MQTT_PORT);
   
 }
 
-//Función para publicar
+//Método para publicar el JSON por MQTT
 void class_MQTT::publish_MQTT( void ){
 
   Serial.println ("Publicando información...");
@@ -34,11 +39,9 @@ void class_MQTT::publish_MQTT( void ){
 void class_MQTT::reconnect_MQTT( void ){
 
   if ( !client.connected() ){
-
     while (!client.connected () ){
-      
       Serial.print("Intentando la conexión MQTT...");
-      
+  
       String clientId = "ESP32Client-"; //Crea id del cliente MQTT
       clientId += String(random(0xffff), HEX); //Concatena un numero random hexadecimal
       
@@ -52,9 +55,12 @@ void class_MQTT::reconnect_MQTT( void ){
       }
     }
   }
+
   client.loop();
+
 }
 
+//Conecta al HOSTPOT configurado
 void class_MQTT::setup_WiFi( void ){
 
   delay(10);
@@ -68,4 +74,5 @@ void class_MQTT::setup_WiFi( void ){
   
   Serial.print("WiFi configurado con la IP: " );
   Serial.println(WiFi.localIP());
+
 }
