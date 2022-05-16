@@ -1,4 +1,4 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_tasks{
 
   public: //Variables Públicas
@@ -27,6 +27,7 @@ class class_tasks{
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+//Inicializa todos los dispositivos
 void class_tasks::init_devices( void ){
 
   RTC.initRTC();
@@ -80,7 +81,7 @@ int class_tasks::get_brightness( void ){
 //Obtiene el movimiento cada 1 segundo
 int class_tasks::get_movement( void ){
   if((millis() - timeMov) >= intervaloMov){ //Intervalo de 1 segundo
-    timeMov = millis();
+    timeMov = millis(); //Guarda el tiempo actual   
     int isMov = sensor.obtener_movimiento(); //Obtiene valor de movimiento
     Serial.print("Hay movimiento: ");
     Serial.println(isMov);
@@ -118,6 +119,7 @@ void class_tasks::printData( int temp, int hum, int lum ){
   LCD.printLCD(temp, hum, lum);
 }
 
+//Pública los valores obtenidos por MQTT
 void class_tasks::publish_MQTT( void ){
   if((millis() - timeMQTT) >= intervaloMQTT){ //Intervalo de 5 segundo
     mqtt.reconnect_MQTT ( );
@@ -126,10 +128,11 @@ void class_tasks::publish_MQTT( void ){
   }
 }
 
+//Guarda el JSON con loa valores obenidos en la SD
 void class_tasks::save_file( String accion, String advertencia ){
   
-  if( ( millis() - timeDL ) >= intervaloDL ){
+  if( ( millis() - timeDL ) >= intervaloDL ){ //Intervalo de 5 segundo
     MSD.create_json(accion, advertencia);
-    timeDL = millis();
+    timeDL = millis(); //Guarda el tiempo actual   
   }
 }

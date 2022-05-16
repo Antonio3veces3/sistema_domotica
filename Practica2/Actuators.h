@@ -1,11 +1,13 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
- public:   //Métodos Públicos  
-    void initBuzzer( void );           
-    void EncenderLED( void ); 
-    void ApagarLED( void );  
-    void EncenderBuzzer( void );
-    void ApagarBuzzer( void );
+  public: 
+  
+  public:   //Métodos Públicos  
+      void initBuzzer( void );           
+      void EncenderLED( void ); 
+      void ApagarLED( void );  
+      void EncenderBuzzer( void );
+      void ApagarBuzzer( void );
 };
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
