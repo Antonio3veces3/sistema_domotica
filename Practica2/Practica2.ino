@@ -2,7 +2,7 @@
 *                                                                            *
 *      NOMBRE:      Práctica 2.1.                                            *
 *      FECHA:       16 de mayo de 2022.                                     *
-*      VERSIÓN:     1.0.                                                     *
+*      VERSIÓN:     1.1.                                                     *
 *                                                                            *
 *      AUTOR:       Mondragón Delgado Mezly Zahory                           *
 *                   Montaño Ruvalcaba Luis Alberto                           *
@@ -62,19 +62,19 @@ void loop(void){
   int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
   int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
 
-  if(brightness > 340 and  movement  == 1){
+  if(brightness > 390 and  movement  == 1){
       tasks.LED_ON(); //Funcion que enciende el LED
       Serial.println("ENCENDER LED");
-      tasks.save_file("Foco encendido", "Se detecto movimiento");
-      tasks.publish_MQTT();
+      tasks.save_file("Foco encendido", "Se detecto movimiento"); //Guarda el dato en el JSON
+      tasks.publish_MQTT(); //Publica la infomación por MQTT
     }
     else{
       if (brightness != -1 or movement != -1)
       {
         tasks.LED_OFF(); //Funcion que apaga el LED 
         Serial.println("APAGAR LED");
-        tasks.save_file("Foco apagado", "No se detecto movimiento");
-        tasks.publish_MQTT();
+        tasks.save_file("Foco apagado", "No se detecto movimiento"); //Guarda el dato en el JSON
+        tasks.publish_MQTT();  //Publica la infomación por MQTT
       }
     }
 
@@ -85,14 +85,14 @@ void loop(void){
   {
     tasks.Buzzer_ON(); //Enciende el buzzer
     Serial.println("ENCIENDE BUZZER");
-    tasks.save_file("Buzzer encendido", "No se detecto movimiento");
-    tasks.publish_MQTT();
+    tasks.save_file("Buzzer encendido", "No se detecto movimiento"); //Guarda el dato en el JSON
+    tasks.publish_MQTT();  //Publica la infomación por MQTT
   }
   else{
     tasks.Buzzer_OFF(); //Apaga el buzzer
     Serial.println("APAGA BUZZER");
-    tasks.save_file("Buzzer apagado", "No se detecto movimiento");
-    tasks.publish_MQTT();
+    tasks.save_file("Buzzer apagado", "No se detecto movimiento"); //Guarda el dato en el JSON
+    tasks.publish_MQTT();  //Publica la infomación por MQTT
   }  
   delay(1000);
 }
