@@ -1,4 +1,4 @@
-/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
+/*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_rtc {
     public:
         String fecha = "", hora = "";
@@ -16,14 +16,14 @@ class class_rtc {
 
 //Inicializar el RTC
 void class_rtc::initRTC(void){ 
-    if (! rtc.begin()) { //Si no lo encuentra muestra un mensaje de error
+    if (! rtc.begin()) { //Si no encuentra el RTC muestra un mensaje de error
         Serial.println("No se pudo encontrar el módulo RTC");
         Serial.flush();
         while (1) delay(10);
     }
 
-    if (! rtc.isrunning()) { //Si no se inicializa muestra un mensaje de error
-        Serial.println("Sucedió un error inesperado. El módulo RTC no esta corriendo, hay que ajustar la fecha.");
+    if (! rtc.isrunning()) { //Si no se inicializa el RTC muestra un mensaje de error
+        Serial.println("Sucedió un error inesperado. El módulo RTC no esta corriendo");
     }
 }
 
@@ -42,28 +42,30 @@ void class_rtc::getDataTime(void){
     segundo = now.second();
 }
 
+//Da el formato de fecha (dia/mes/año)
 void class_rtc::formatDate(void){
 
     fecha = "";
-    if (dia < 10) fecha += '0';
+    if (dia < 10) fecha += '0'; //Agrega un 0 en caso de que el DÍA sea menor a 10
     fecha += dia;
     fecha += '/';
-    if (mes < 10) fecha += '0';
+    if (mes < 10) fecha += '0'; //Agrega un 0 en caso de que el MES sea menor a 10
     fecha += mes;
     fecha += '/';
-    fecha += ano;
+    fecha += ano; //Guarda el formato de la fecha
 
 }
 
+//Da el formato de la hora (hora:minuto)
 void class_rtc::formatTime(void){
 
     hora = "";
-    if (horas < 10) hora += '0';
+    if (horas < 10) hora += '0';  //Agrega un 0 en caso de que la HORAS sean menores a 10
     hora += horas;
     hora += ':';
-    if (minuto < 10) hora += '0';
+    if (minuto < 10) hora += '0'; //Agrega un 0 en caso de que el MINUTOS sean menores a 10
     hora += minuto;
     hora += ':';
-    if (segundo < 10) hora += '0';
-    hora += segundo;
+    if (segundo < 10) hora += '0'; //Agrega un 0 en caso de que los SEGUNDOS sean menores a 10
+    hora += segundo; //Guarda el formato de la hora
 }
