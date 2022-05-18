@@ -5,10 +5,14 @@ const char* HOTSPOT_PWD = "pelusatony";
 const char* MQTT_SERVER = "test.mosquitto.org";
 #define MQTT_PORT 1883
 #define TOPIC "esp32-RALMT/data"
+#define BUFFER_SIZE (50)
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_MQTT {
   public:
+    unsigned long lastMsg = 0;
+    char msg[BUFFER_SIZE];
+    int value = 0;
 
   public: //Métodos públicos
     void subscribe_MQTT( void );
@@ -20,10 +24,27 @@ class class_MQTT {
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MÉTODOS~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
+void callback(char* topic, byte* payload, unsigned int length){
+
+  Serial.print("Mensaje del tema [");
+  Serial.print(topic);
+  Serial.print("] : ");
+
+  String message;
+  for(int i = 0; i < length; i++){
+    message = message + (char) payload[i];
+  }
+  
+  Serial.print(message);
+  Serial.println();
+ 
+}
+
 //Inicializar el servidor 
 void class_MQTT::set_MQTT_server( void ){
 
   client.setServer(MQTT_SERVER, MQTT_PORT);
+  client.setCallback(callback);
   
 }
 
@@ -37,7 +58,7 @@ void class_MQTT::publish_MQTT( void ){
 
 //Función para reconectarse a MQTT
 void class_MQTT::reconnect_MQTT( void ){
-
+ 
   if ( !client.connected() ){
     while (!client.connected () ){
       Serial.print("Intentando la conexión MQTT...");
@@ -47,6 +68,7 @@ void class_MQTT::reconnect_MQTT( void ){
       
       if ( client.connect( clientId.c_str() ) ) {
         Serial.println("CONECTADO :D");
+        client.subscribe("RALMT/#");
       } else {
         Serial.print("CONEXIÓN FALLIDA, rc =");
         Serial.print(client.state()); //Imprime estado del cliente

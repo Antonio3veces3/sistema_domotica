@@ -56,44 +56,41 @@ void setup(void) {
 void loop(void){
 
   RTC.getDataTime();
+  mqtt.reconnect_MQTT();
     
-  int movement = tasks.get_movement(); //Obtiene el valor del movimiento
-  int brightness = tasks.get_brightness();  //Obtiene el valor de la luminosidad
-  int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
-  int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
+  //int movement = tasks.get_movement(); //Obtiene el valor del movimiento
+  //int brightness = tasks.get_brightness();  //Obtiene el valor de la luminosidad
+  //int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
+  //int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
 
-  if(brightness > 390 and  movement  == 1){
+  if(tasks.get_brightness() != -1 and tasks.get_movement()!= -1){
+    if(tasks.brightness > 360 and tasks.isMov == 1){
       tasks.LED_ON(); //Funcion que enciende el LED
       Serial.println("ENCENDER LED");
       tasks.save_file("Foco encendido", "Se detecto movimiento"); //Guarda el dato en el JSON
-      tasks.publish_MQTT(); //Publica la infomación por MQTT
+      tasks.publish_MQTT(); //Publica la infomación por MQTT 
+    }else{
+      tasks.LED_OFF(); //Funcion que apaga el LED
     }
-    else{
-      if (brightness != -1 or movement != -1)
-      {
-        tasks.LED_OFF(); //Funcion que apaga el LED 
-        Serial.println("APAGAR LED");
-        tasks.save_file("Foco apagado", "No se detecto movimiento"); //Guarda el dato en el JSON
-        tasks.publish_MQTT();  //Publica la infomación por MQTT
-      }
-    }
+  }
+  
 
-  if (temperature!= 0 or humidity !=0)
-    tasks.printData(temperature, humidity, brightness); //Imprime los datos en el LCD
+  if (tasks.get_temperature()!= 0 or tasks.get_humidity() !=0){
+    tasks.printData(tasks.temperature, tasks.humidity, tasks.brightness); //Imprime los datos en el LCD
+    tasks.save_file("", ""); //Guarda el dato en el JSON
+    tasks.publish_MQTT(); //Publica la infomación por MQTT
+  }
+    
 
-  if(temperature >= 40)
+  if(tasks.temperature >= 40)
   {
     tasks.Buzzer_ON(); //Enciende el buzzer
     Serial.println("ENCIENDE BUZZER");
-    tasks.save_file("Buzzer encendido", "No se detecto movimiento"); //Guarda el dato en el JSON
+    tasks.save_file("Buzzer encendido", "Temperatura alta"); //Guarda el dato en el JSON
     tasks.publish_MQTT();  //Publica la infomación por MQTT
   }
   else{
     tasks.Buzzer_OFF(); //Apaga el buzzer
-    Serial.println("APAGA BUZZER");
-    tasks.save_file("Buzzer apagado", "No se detecto movimiento"); //Guarda el dato en el JSON
-    tasks.publish_MQTT();  //Publica la infomación por MQTT
   }  
-  delay(1000);
 }
   
