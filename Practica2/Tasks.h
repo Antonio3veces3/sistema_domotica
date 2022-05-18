@@ -2,10 +2,9 @@
 class class_tasks{
 
   public: //Variables Públicas
-    unsigned long intervaloMQTT = 15000, timeMQTT = 0;
-    unsigned long intervaloDL = 15000, timeDL = 0;
-    unsigned long intervaloTemp = 5000, timeTemp = 0;  //Intervalo de tiempo temperatura
-    unsigned long intervaloHum = 5000, timeHum = 0;   //Intervalo de tiempo humedad
+    int temperature, humidity, brightness, isMov;
+    unsigned long intervaloTemp = 10000, timeTemp = 0;  //Intervalo de tiempo temperatura
+    unsigned long intervaloHum = 10000, timeHum = 0;   //Intervalo de tiempo humedad
     unsigned long intervaloLdr = 1000, timeLdr = 0;   //Intervalo de tiempo sensor LDR
     unsigned long intervaloMov = 1000, timeMov = 0;  //Intervalo de tiempo sensor PIR
     
@@ -44,7 +43,7 @@ void class_tasks::init_devices( void ){
 int class_tasks::get_temperature( void ){
   if((millis() - timeTemp) >= intervaloTemp ){ //Intervalo de 5 segundos
     timeTemp = millis(); //Guarda el tiempo actual
-    int temperature = sensor.obtener_temperatura(); //Obtiene temperatura
+    temperature = sensor.obtener_temperatura(); //Obtiene temperatura
     Serial.print("Temperatura: ");
     Serial.println(temperature);
     return temperature; //Retorna temperatura
@@ -57,7 +56,7 @@ int class_tasks::get_temperature( void ){
 int class_tasks::get_humidity( void ){
   if((millis() - timeHum) >= intervaloHum ){ //Intervalo de 5 segundos
     timeHum = millis(); //Guarda el tiempo actual
-    int humidity = sensor.obtener_humedad(); //Obtiene humedad
+    humidity = sensor.obtener_humedad(); //Obtiene humedad
     Serial.print("Humedad: ");
     Serial.println(humidity);
     return humidity; //Retorna humedad
@@ -70,7 +69,7 @@ int class_tasks::get_humidity( void ){
 int class_tasks::get_brightness( void ){
   if((millis() - timeLdr) >= intervaloLdr){ //Intervalo de 1 segundo
     timeLdr = millis();  //Guarda el tiempo actual
-    int brightness = map(sensor.obtener_luminosidad(), 0, 1000, 0, 100); //Mapea valores de luminosidad
+    brightness = map(sensor.obtener_luminosidad(), 0, 1000, 0, 100); //Cambia escala de valores de luminosidad
     Serial.println("Luminosidad: " + String(brightness));
     return brightness; //retorna la luminosidad
   }else{ 
@@ -82,7 +81,7 @@ int class_tasks::get_brightness( void ){
 int class_tasks::get_movement( void ){
   if((millis() - timeMov) >= intervaloMov){ //Intervalo de 1 segundo
     timeMov = millis(); //Guarda el tiempo actual   
-    int isMov = sensor.obtener_movimiento(); //Obtiene valor de movimiento
+    isMov = sensor.obtener_movimiento(); //Obtiene valor de movimiento
     Serial.print("Hay movimiento: ");
     Serial.println(isMov);
     return isMov; //Retorna valor de movimiento
@@ -121,18 +120,10 @@ void class_tasks::printData( int temp, int hum, int lum ){
 
 //Pública los valores obtenidos por MQTT
 void class_tasks::publish_MQTT( void ){
-  if((millis() - timeMQTT) >= intervaloMQTT){ //Intervalo de 5 segundo
-    mqtt.reconnect_MQTT ( );
-    mqtt.publish_MQTT ( );
-    timeMQTT = millis();  //Guarda el tiempo actual   
-  }
+    mqtt.publish_MQTT();
 }
 
 //Guarda el JSON con loa valores obenidos en la SD
 void class_tasks::save_file( String accion, String advertencia ){
-  
-  if( ( millis() - timeDL ) >= intervaloDL ){ //Intervalo de 5 segundo
     MSD.create_json(accion, advertencia);
-    timeDL = millis(); //Guarda el tiempo actual   
-  }
 }
