@@ -75,7 +75,7 @@ void loop(void){
   }
   
 
-  if (tasks.get_temperature()!= 0 or tasks.get_humidity() !=0){
+  if (tasks.get_temperature()!= 0 and tasks.get_humidity() !=0){
     tasks.printData(tasks.temperature, tasks.humidity, tasks.brightness); //Imprime los datos en el LCD
     tasks.save_file("", ""); //Guarda el dato en el JSON
     tasks.publish_MQTT(); //Publica la infomación por MQTT
