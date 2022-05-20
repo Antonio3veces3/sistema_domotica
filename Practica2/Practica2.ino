@@ -76,21 +76,22 @@ void loop(void){
   
 
   if (tasks.get_temperature()!= 0 and tasks.get_humidity() !=0){
-    tasks.printData(tasks.temperature, tasks.humidity, tasks.brightness); //Imprime los datos en el LCD
-    tasks.save_file("", ""); //Guarda el dato en el JSON
-    tasks.publish_MQTT(); //Publica la infomación por MQTT
-  }
+    if(tasks.temperature >= 28)
+    {
+      tasks.Buzzer_ON(); //Enciende el buzzer
+      Serial.println("ENCIENDE BUZZER");
+      tasks.save_file("Buzzer encendido", "Temperatura alta"); //Guarda el dato en el JSON
+      tasks.publish_MQTT();  //Publica la infomación por MQTT
+    }
+    else
+    {
+      tasks.Buzzer_OFF(); //Apaga el buzzer
+      tasks.save_file("", ""); //Guarda el dato en el JSON
+      tasks.publish_MQTT(); //Publica la infomación por MQTT
+    } 
     
-
-  if(tasks.temperature >= 40)
-  {
-    tasks.Buzzer_ON(); //Enciende el buzzer
-    Serial.println("ENCIENDE BUZZER");
-    tasks.save_file("Buzzer encendido", "Temperatura alta"); //Guarda el dato en el JSON
-    tasks.publish_MQTT();  //Publica la infomación por MQTT
-  }
-  else{
-    tasks.Buzzer_OFF(); //Apaga el buzzer
-  }  
+    tasks.printData(tasks.temperature, tasks.humidity, tasks.brightness); //Imprime los datos en el LCD
+    
+    }
 }
   
