@@ -1,7 +1,7 @@
 /*****************************************************************************
 *                                                                            *
 *      NOMBRE:      Práctica 2.1.                                            *
-*      FECHA:       16 de mayo de 2022.                                     *
+*      FECHA:       27 de mayo de 2022.                                     *
 *      VERSIÓN:     1.1.                                                     *
 *                                                                            *
 *      AUTOR:       Mondragón Delgado Mezly Zahory                           *
@@ -58,11 +58,6 @@ void loop(void){
   RTC.getDataTime();
   mqtt.reconnect_MQTT();
     
-  //int movement = tasks.get_movement(); //Obtiene el valor del movimiento
-  //int brightness = tasks.get_brightness();  //Obtiene el valor de la luminosidad
-  //int temperature = tasks.get_temperature(); //Obtiene  valor de la temperatura
-  //int humidity = tasks.get_humidity(); //Obtiene valor de humedad  
-
   if(tasks.get_brightness() != -1 and tasks.get_movement()!= -1){
     if(tasks.brightness > 360 and tasks.isMov == 1){
       tasks.LED_ON(); //Funcion que enciende el LED
@@ -74,9 +69,8 @@ void loop(void){
     }
   }
   
-
   if (tasks.get_temperature()!= 0 and tasks.get_humidity() !=0){
-    if(tasks.temperature >= 28)
+    if(tasks.temperature >= 40)
     {
       tasks.Buzzer_ON(); //Enciende el buzzer
       Serial.println("ENCIENDE BUZZER");
