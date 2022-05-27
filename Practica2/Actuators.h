@@ -1,6 +1,7 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
   public: 
+      String date_time;
   
   public:   //Métodos Públicos  
       void initBuzzer( void );           
@@ -66,7 +67,7 @@ void class_actuators::printLCD( int temp, int hum, int lum ){
     RTC.formatDate(); //Obtiene la fecha en el formato dia/mes/año
     RTC.formatTime();  //Obtiene la hora en el formato hora:minuto
 
-    String date_time = RTC.fecha + " " + RTC.hora;  //Guarda la fecha y hora en un string
+    date_time = RTC.fecha + " " + RTC.hora;  //Guarda la fecha y hora en un string
 
     lcd.clear();
     lcd.createChar(0, customGrade); //Crea el icono personalizado
