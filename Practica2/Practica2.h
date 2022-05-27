@@ -2,17 +2,22 @@
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~LIBRERIAS y PINES UTILIZADOS~~~~~~~~~~~~~~~~~~~~~~*/
 
-//Librería para conectar via WiFi la ESP32
-#include <WiFi.h>
-  WiFiClient ESP32_WIFI;
+#include <WiFi.h>                   //Librería para conectar vía WiFi la ESP32
+  WiFiClient ESP32_WIFI;            //Instancia el cliente para utilizar el módulo WIFI de la placa ESP32
   
-//Librería para conectar la ESP32 por MQTT
-#include <PubSubClient.h>
-  PubSubClient client ( ESP32_WIFI );
+#include <PubSubClient.h>               //Librería para conectar la ESP32 por MQTT
+  PubSubClient client ( ESP32_WIFI );   //Instancia el cliente (ESP32_WIFI) para conectarse a MQTT
+  
+#include <LiquidCrystal_I2C.h>          //Librería para usar la LCD mediante el módulo I2C
+  LiquidCrystal_I2C lcd(0x27, 16, 2);   //Se instancia la LCD 
 
-//Librería para usar la LCD mediante el módulo I2C
-#include <LiquidCrystal_I2C.h>
-  LiquidCrystal_I2C lcd(0x27, 16, 2); //Configura la LCD a 16x2
+#include "RTClib.h"         //Librería para hacer uso del RTC
+ RTC_DS1307 rtc;            //Se instancia el RTC
+
+#include <Wire.h>         //Librería para establecer comunicación con dispositivos que usan el protocolo I2C
+#include <SPI.h>          //Librería para establecer comunicación con dispositivos que usan el protocolo SPI
+#include <SD.h>            //Librería para hacer uso de la SD
+#include <EasyBuzzer.h>  //Librería para hacer uso del buzzer
 
 //Definición de pines de los dispositivos utilizados
 #define PIR_PIN 15
@@ -22,31 +27,14 @@
 #define DHT11_PIN 32
 #define MICROSD_PIN 5
 
-//Se define la extensión del archivo almacenado en la SD
-#define EXTENSION ".json"
+#define EXTENSION ".json"  //Se define la extensión del archivo almacenado en la SD
+#include <ArduinoJson.h> //Librería para hacer uso del objeto JSON
+File microSD_file; //Se define el archivo con el que se va a trabajar en la SD
 
-//Librería para hacer uso del buzzer
-#include <Config.h>
-#include <EasyBuzzer.h> 
-
-//Librería para hacer uso del sensor DHT11
+//Librerías para hacer uso del sensor DHT11
 #include <DHT.h>
 #include <DHT_U.h>
   DHT dht(DHT11_PIN, DHT11); //Se instancia el sensor en el pin 32 de la ESP32
-
-//Librería para hacer uso del objeto JSON
-#include <ArduinoJson.h>
-
-//Librería para hacer uso de la SD
-#include <Wire.h>
-#include <SPI.h>
-#include <SD.h>
-
-//Librería para hacer uso del RTC
-#include "RTClib.h"
- RTC_DS1307 rtc; //Se instancia el RTC
- 
-File microSD_file; //Se define el archivo con el que se va a trabajar en la SD
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~IMPORTACIÓN DE CLASES~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
@@ -61,9 +49,6 @@ File microSD_file; //Se define el archivo con el que se va a trabajar en la SD
 
 #include "MicroSD.h"
  class_microSD MSD;          //Importa la clase de la microSD
-
-#include "LCD.h"              
- class_lcd LCD;                //Importa la clase de LCD
 
 #include "MQTT.h"
  class_MQTT mqtt;              //Importa la clase de MQTT
