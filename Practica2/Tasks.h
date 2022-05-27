@@ -31,7 +31,7 @@ void class_tasks::init_devices( void ){
 
   RTC.initRTC();
   MSD.initMicroSD();
-  LCD.initLCD();
+  actuator.initLCD();
   actuator.initBuzzer();
   sensor.initDHT11();
   mqtt.setup_WiFi ( );
@@ -115,7 +115,7 @@ void class_tasks::Buzzer_OFF( void ){
 
 //Imprime valores obtenidos en la LCD
 void class_tasks::printData( int temp, int hum, int lum ){
-  LCD.printLCD(temp, hum, lum);
+  actuator.printLCD(temp, hum, lum);
 }
 
 //Pública los valores obtenidos por MQTT
