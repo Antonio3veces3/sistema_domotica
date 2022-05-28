@@ -2,7 +2,7 @@
 *                                                                            *
 *      NOMBRE:      Práctica 2.1.                                            *
 *      FECHA:       27 de mayo de 2022.                                     *
-*      VERSIÓN:     1.1.                                                     *
+*      VERSIÓN:     1.2.                                                     *
 *                                                                            *
 *      AUTOR:       Mondragón Delgado Mezly Zahory                           *
 *                   Montaño Ruvalcaba Luis Alberto                           *
@@ -18,8 +18,8 @@
 *                                                                            *
 *      COMPAÑÍA:    Universidad de Colima - Facultad de Telemática.          *
 *                                                                            *
-*      uC:          ESP832.                                                  *
-*      Nombre:      ESP832.                                                  *
+*      uC:          ESP32.                                                  *
+*      Nombre:      ESP32.                                                  *
 *                                                                            *
 ******************************************************************************
 *                                                                            *
