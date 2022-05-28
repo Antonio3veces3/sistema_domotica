@@ -1,6 +1,6 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_rtc {
-    public:
+    public:  //Variables Públicas 
         String fecha = "", hora = "";
         uint8_t horas, minuto, segundo, dia, mes;
         uint16_t ano;
@@ -46,10 +46,10 @@ void class_rtc::getDataTime(void){
 void class_rtc::formatDate(void){
 
     fecha = "";
-    if (dia < 10) fecha += '0'; //Agrega un 0 en caso de que el DÍA sea menor a 10
+    if (dia < 10) fecha += '0';  //Agrega un 0 en caso de que DIA sea menor a 10
     fecha += dia;
     fecha += '/';
-    if (mes < 10) fecha += '0'; //Agrega un 0 en caso de que el MES sea menor a 10
+    if (mes < 10) fecha += '0'; //Agrega un 0 en caso de que MES sea menor a 10
     fecha += mes;
     fecha += '/';
     fecha += ano; //Guarda el formato de la fecha
@@ -60,12 +60,12 @@ void class_rtc::formatDate(void){
 void class_rtc::formatTime(void){
 
     hora = "";
-    if (horas < 10) hora += '0';  //Agrega un 0 en caso de que la HORAS sean menores a 10
+    if (horas < 10) hora += '0';  //Agrega un 0 en caso de que HORAS sean menores a 10
     hora += horas;
     hora += ':';
-    if (minuto < 10) hora += '0'; //Agrega un 0 en caso de que el MINUTOS sean menores a 10
+    if (minuto < 10) hora += '0'; //Agrega un 0 en caso de que MINUTOS sean menores a 10
     hora += minuto;
     hora += ':';
-    if (segundo < 10) hora += '0'; //Agrega un 0 en caso de que los SEGUNDOS sean menores a 10
+    if (segundo < 10) hora += '0'; //Agrega un 0 en caso de que SEGUNDOS sean menores a 10
     hora += segundo; //Guarda el formato de la hora
 }

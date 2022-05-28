@@ -29,39 +29,39 @@ class class_tasks{
 //Inicializa todos los dispositivos
 void class_tasks::init_devices( void ){
 
-  RTC.initRTC();
-  MSD.initMicroSD();
-  actuator.initLCD();
-  actuator.initBuzzer();
-  sensor.initDHT11();
-  mqtt.setup_WiFi ( );
-  mqtt.set_MQTT_server ( );
+  RTC.initRTC();  //Inicializa el reloj RTC
+  MSD.initMicroSD(); //Inicializa el módulo SD
+  actuator.initLCD(); //Inicializa el display LCD
+  actuator.initBuzzer(); //Inicializa el Buzzer
+  sensor.initDHT11(); //Inicializa el sensor DHT11
+  mqtt.setup_WiFi ( ); //Configuración para conectarse a un hotspot WiFi
+  mqtt.set_MQTT_server ( ); //Se conecta a un broker MQTT
   
 }
 
-//Obtiene la temperatura cada 5 segundos
+//Obtiene la temperatura cada 10 segundos
 int class_tasks::get_temperature( void ){
-  if((millis() - timeTemp) >= intervaloTemp ){ //Intervalo de 5 segundos
+  if((millis() - timeTemp) >= intervaloTemp ){ //Intervalo de 10 segundos
     timeTemp = millis(); //Guarda el tiempo actual
     temperature = sensor.obtener_temperatura(); //Obtiene temperatura
     Serial.print("Temperatura: ");
     Serial.println(temperature);
     return temperature; //Retorna temperatura
   }else{
-    return 0;
+    return 0;  //Indica que no se ha cumplido el intervalo 
   }
 }
 
-//Obtiene la humedad cada 5 segundos
+//Obtiene la humedad cada 10 segundos
 int class_tasks::get_humidity( void ){
-  if((millis() - timeHum) >= intervaloHum ){ //Intervalo de 5 segundos
+  if((millis() - timeHum) >= intervaloHum ){ //Intervalo de 10 segundos
     timeHum = millis(); //Guarda el tiempo actual
     humidity = sensor.obtener_humedad(); //Obtiene humedad
     Serial.print("Humedad: ");
     Serial.println(humidity);
     return humidity; //Retorna humedad
   }else{
-     return 0;
+     return 0; //Indica que no se ha cumplido el intervalo
   }
 }
 
@@ -71,9 +71,9 @@ int class_tasks::get_brightness( void ){
     timeLdr = millis();  //Guarda el tiempo actual
     brightness = map(sensor.obtener_luminosidad(), 0, 1000, 0, 100); //Cambia escala de valores de luminosidad
     Serial.println("Luminosidad: " + String(brightness));
-    return brightness; //retorna la luminosidad
+    return brightness; //Retorna la luminosidad
   }else{ 
-    return -1;
+    return -1; //Indica que no se ha cumplido el intervalo
   }
 }
 
@@ -86,7 +86,7 @@ int class_tasks::get_movement( void ){
     Serial.println(isMov);
     return isMov; //Retorna valor de movimiento
   }else{
-    return -1;
+    return -1;  //Indica que no se ha cumplido el intervalo
   }
 }
 
@@ -104,7 +104,7 @@ void class_tasks::LED_OFF( void ){
 void class_tasks::Buzzer_ON( void ){
   for(int i =1;i<=5;i++)
   {
-    actuator.EncenderBuzzer();
+    actuator.EncenderBuzzer(); //Enciende el Buzzer
   }
 }
 
@@ -123,7 +123,7 @@ void class_tasks::publish_MQTT( void ){
     mqtt.publish_MQTT();
 }
 
-//Guarda el JSON con loa valores obenidos en la SD
+//Guarda el JSON con los valores obtenidos en la SD
 void class_tasks::save_file( String accion, String advertencia ){
     MSD.create_json(accion, advertencia);
 }

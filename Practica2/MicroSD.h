@@ -16,7 +16,7 @@ class class_microSD {
 //Inicializa la microSD
 void class_microSD::initMicroSD( void ){
   
-  while(!SD.begin(MICROSD_PIN)){
+  while(!SD.begin(MICROSD_PIN)){  //Verifica si se reconoce la micro SD
     Serial.println( F ( "Error :( No se reconoció la MicroSD"));
     delay(1000);
   }
@@ -27,7 +27,7 @@ void class_microSD::initMicroSD( void ){
 void class_microSD::fileID( void ){
 
   filename = '/';
-  if (RTC.dia < 10) filename += '0'; //Agrega un 0 en caso de que DÍA sea menor a 10
+  if (RTC.dia < 10) filename += '0'; //Agrega un 0 en caso de que DIA sea menor a 10
   filename += RTC.dia;
   if (RTC.mes < 10) filename += '0'; //Agrega un 0 en caso de que MES sea menor a 10
   filename += RTC.mes;
@@ -42,14 +42,13 @@ void class_microSD::create_json( String accion, String advertencia ){
   RTC.formatTime(); //Obtiene el formato de la fecha
   RTC.formatDate(); //Obtiene el formato de la hora
   DynamicJsonDocument doc(1024); //Inicializa el doc JSON
-  doc ["tiempo"]["fecha"] = RTC.fecha; 
-  doc ["tiempo"]["hora"] = RTC.hora;  //Crea el vector tiempo para guarda la fecha y hora
-  doc ["clima"]["temperatura"] = sensor.temperatura; 
+  doc ["tiempo"]["fecha"] = RTC.fecha; //Guarda la fecha
+  doc ["tiempo"]["hora"] = RTC.hora;  //Crea el vector tiempo para guardar la fecha y hora
+  doc ["clima"]["temperatura"] = sensor.temperatura; //Agrega la temperatura
   doc ["clima"]["humedad"] = sensor.humedad;   //Crea el vector clima para guarda la temperatura y humedad
-  doc ["notificacion"]["accion"] = accion;
+  doc ["notificacion"]["accion"] = accion; //Agrega una acción
   doc ["notificacion"]["advertencia"] = advertencia;   //Crea el vector notificacion para guardar las acciones y advertencias
-  JSON_SaveFile(&doc); //Guarda el json
-
+  JSON_SaveFile(&doc); //Guarda el json en un archivo .json de la micro SD
 }
 
 //Guarda el JSON en el archivo .json
@@ -66,5 +65,6 @@ void class_microSD::JSON_SaveFile( DynamicJsonDocument *doc ){
     microSD_file.close(); //Cierra el archivo
   }
   else
-    Serial.print( F ("Error fatal. No se pudo guardar la información en la tarjeta SD :( \n")); //Muestra un error en caso contrario
+    Serial.print( F ("Error fatal. No se pudo guardar la información en la tarjeta SD :( \n")); //Mensaje de que no guardó la información
+
 }

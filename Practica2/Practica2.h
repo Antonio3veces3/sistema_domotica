@@ -2,7 +2,7 @@
 
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~LIBRERIAS y PINES UTILIZADOS~~~~~~~~~~~~~~~~~~~~~~*/
 
-#include <WiFi.h>                   //Librería para conectar vía WiFi la ESP32
+#include <WiFi.h>                  //Librería para conectar vía WiFi la ESP32
   WiFiClient ESP32_WIFI;            //Instancia el cliente para utilizar el módulo WIFI de la placa ESP32
   
 #include <PubSubClient.h>               //Librería para conectar la ESP32 por MQTT
@@ -16,8 +16,9 @@
 
 #include <Wire.h>         //Librería para establecer comunicación con dispositivos que usan el protocolo I2C
 #include <SPI.h>          //Librería para establecer comunicación con dispositivos que usan el protocolo SPI
-#include <SD.h>            //Librería para hacer uso de la SD
-#include <EasyBuzzer.h>  //Librería para hacer uso del buzzer
+#include <SD.h>            //Librería para escribir y leer en tarjetas SD
+#include <EasyBuzzer.h>   //Librería para hacer uso del buzzer
+#include <ArduinoJson.h>  //Librería para hacer uso del objeto JSON
 
 //Definición de pines de los dispositivos utilizados
 #define PIR_PIN 15
@@ -28,7 +29,6 @@
 #define MICROSD_PIN 5
 
 #define EXTENSION ".json"  //Se define la extensión del archivo almacenado en la SD
-#include <ArduinoJson.h> //Librería para hacer uso del objeto JSON
 File microSD_file; //Se define el archivo con el que se va a trabajar en la SD
 
 //Librerías para hacer uso del sensor DHT11

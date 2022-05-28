@@ -1,6 +1,6 @@
 /*~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~CLASE~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 class class_actuators {
-  public: 
+  public:  //Variables Públicas 
       String date_time;
   
   public:   //Métodos Públicos  
@@ -35,30 +35,30 @@ void class_actuators::initBuzzer( void ){
 
 //Enciende el LED
 void class_actuators::EncenderLED( void ){
-    digitalWrite(RELAY_PIN,LOW); //PIN RELAY
+    digitalWrite(RELAY_PIN,LOW); //Estado bajo para encender el relay de estado sólido
 }
 
 //Apaga el LED
 void class_actuators::ApagarLED( void ){
-    digitalWrite(RELAY_PIN,HIGH);  //PIN RELAY
+    digitalWrite(RELAY_PIN,HIGH);  //Estado alto para apagar el relay de estado sólido
 }
 
 //Enciende el buzzer
 void class_actuators::EncenderBuzzer( void ){
-  EasyBuzzer.update();
-  EasyBuzzer.beep(1000);
+  EasyBuzzer.update(); //Mantiene en funcionamiento constante la librería EasyBuzzer
+  EasyBuzzer.beep(1000); ; //Sonido configurado a 1000Hz
 }
 
 //Apaga el buzzer
 void class_actuators::ApagarBuzzer( void ){
-   EasyBuzzer.update();
-   EasyBuzzer.stopBeep();
+   EasyBuzzer.update(); 
+   EasyBuzzer.stopBeep(); //Detiene el sonido
 }
 
 //Inicializar la LCD
 void class_actuators::initLCD( void ){ 
-    lcd.init();
-    lcd.backlight();
+    lcd.init(); //Inicializa la LCD
+    lcd.backlight(); //Activa la luz de fondo de nuestra LCD
 }
 
 //Muestra los datos obtenidos en la LCD

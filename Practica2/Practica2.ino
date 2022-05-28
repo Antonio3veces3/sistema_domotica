@@ -45,9 +45,7 @@ void setup(void) {
   pinMode(BUZZER_PIN, OUTPUT); //BUZZER modo salida
   pinMode(RELAY_PIN, OUTPUT); //RELAY RSS  modo salida
   digitalWrite(RELAY_PIN,LOW); //Inicia el relay encendido
-
-  //Inicializar la configuración de los dispositivos 
-  tasks.init_devices();
+  tasks.init_devices(); //Inicializar la configuración de los dispositivos 
 
 }
 
@@ -55,8 +53,8 @@ void setup(void) {
 
 void loop(void){
 
-  RTC.getDataTime();
-  mqtt.reconnect_MQTT();
+  RTC.getDataTime(); //Actualiza el tiempo actual
+  mqtt.reconnect_MQTT(); //Verifica la conexión a MQTT, si se desconecta, intenta reconectarse
     
   if(tasks.get_brightness() != -1 and tasks.get_movement()!= -1){
     if(tasks.brightness > 360 and tasks.isMov == 1){

@@ -2,9 +2,8 @@
 class class_sensors {
 
   public: //Variables Públicas
-    int temperatura, humedad;            
-    int valorLDR = 0; 
-    int valorPIR = 0;
+    int temperatura=0, humedad=0;            
+    int valorLDR=0, valorPIR=0;
 
  public:  //Métodos Públicos
     void initDHT11( void );
